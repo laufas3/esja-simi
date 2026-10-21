@@ -1,0 +1,14 @@
+{
+  "name": "ESJA Legal",
+  "short_name": "ESJA",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF1F8",
+  "theme_color": "#10233F",
+  "lang": "is",
+  "icons": [
+    {"src": "takn-180.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "takn-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>ESJA Legal</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ESJA">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#10233F">
+<meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="takn-180.png">
+<link rel="stylesheet" href="stilar.css">
+<link rel="stylesheet" href="simi.css">
+</head>
+<body>
+<!-- ENGIN GÖGN Í ÞESSARI SKRÁ. Allt efni er sótt eftir innskráningu úr OneDrive notandans (Microsoft Graph). -->
+<header class="s-haus"><h1>ESJA Legal</h1><p id="undirhaus">&nbsp;</p></header>
+<main class="s-megin">
+  <div class="s-syn" id="syn-inn">
+    <section class="s-kafli"><h2>Innskráning</h2>
+      <p>Skráðu þig inn með Microsoft-aðgangi stofunnar. Síminn les þá stöðuna sem tölvurnar birta í OneDrive þínu.</p>
+      <div class="s-takkar"><button class="s-takki adal" onclick="innskra()">Skrá inn</button></div>
+      <p class="s-villa" id="inn-villa"></p></section>
+  </div>
+  <div class="s-syn" id="syn-idag"><div id="dagur" class="s-dalkur"></div></div>
+  <div class="s-syn" id="syn-postur"><div id="postur" class="s-dalkur"></div></div>
+  <div class="s-syn" id="syn-athuga">
+    <section class="s-kafli"><h2>Athuga hagsmunaárekstur</h2>
+      <form onsubmit="event.preventDefault();athuga()">
+        <input class="s-inn" id="nafn" autocomplete="off" placeholder="Nafn, og kennitala ef hún er til">
+        <div class="s-takkar"><button class="s-takki adal" type="submit">Athuga</button></div></form>
+      <p class="s-meta">Tölvan leitar í Vergo, pósti og málsmöppum. Sé slökkt á báðum tölvum bíður könnunin. Þú metur hvort árekstur sé.</p></section>
+    <div id="ar-listi" class="s-dalkur"></div>
+  </div>
+  <div class="s-syn" id="syn-minni">
+    <section class="s-kafli"><h2>Minnisatriði</h2>
+      <input class="s-inn" id="mal-leit" placeholder="Leita að máli" oninput="malSia()" autocomplete="off">
+      <select class="s-inn" id="mal" style="margin-top:8px"><option value="">Ekkert mál valið</option></select>
+      <textarea class="s-inn" id="minni-texti" style="margin-top:8px" placeholder="Skrifaðu, eða ýttu á hljóðnemann á lyklaborðinu og lestu inn."></textarea>
+      <div class="s-takkar"><button class="s-takki adal" onclick="vistaMinni()">Vista</button>
+        <button class="s-takki" id="upptaka" onclick="upptaka()" hidden>● Taka upp</button></div>
+      <p class="s-meta" id="minni-stada"></p></section>
+    <section class="s-kafli"><h2>Síðustu minnisatriði</h2><div id="minni-listi"></div></section>
+  </div>
+</main>
+<button class="s-fab" id="fab" onclick="location.hash='#minni'" aria-label="Minnisatriði" hidden><b></b>Tala</button>
+<nav class="s-stika" id="stika" hidden>
+  <a href="#idag" data-s="idag">Í dag</a>
+  <a href="#postur" data-s="postur">Póstur<span class="s-tala" id="t-postur"></span></a>
+  <a href="#athuga" data-s="athuga">Athuga</a>
+  <a href="#minni" data-s="minni">Minni</a>
+</nav>
+<script src="stillingar.js"></script>
+<script src="msal-browser.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

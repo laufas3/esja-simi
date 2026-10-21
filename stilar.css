@@ -1,0 +1,877 @@
+/* Safír — búið til úr tools\esja_stilar.py (CSS). */
+:root,[data-thema=ljost]{color-scheme:light;--grunnur:#EDF1F8;--flotur:#FFFFFF;--kort:#F6F9FD;--jadar:#D5DFEF;--jadar-mjukur:#E6ECF7;--blek:#0F1B2D;--blek-2:#3B4A60;--blek-3:#5C6B85;--hreimur:#17427E;--hreimur-djup:#10233F;--hreimur-mid:#1B3A63;--hreimur-ton:#2B558C;--brynt:#C0243F;--vidvorun:#9C5300;--rolegt:#7C8AA3;--takki:#E6ECF7;--takki-blek:#0F1B2D;--tom:#DCE4F0;--hetja-blek:#FFFFFF;--hetja-2:#D2DDEE;--hetja-3:#C0CFE6;--hetja-brynt:#FFB8C4;--hetja-takki:#FFFFFF;--fokus:#2B558C;--merki-brynt:#C0243F;--merki-vidvorun:#A85A00;--merki-akvordun:#17427E;--merki-blek:#FFFFFF;--adal-blek:#FFFFFF;--brynt-tonn:#FAE4E8;--vidvorun-tonn:#F7EBDA;--akvordun-tonn:#E1E9F6;--stigull-a:#10233F;--stigull-b:#1B3A63;--stigull-c:#2B558C;--hetja-rammi:#10233F;--valin:#DDE6F4;--skuggi:0 1px 2px rgba(23,66,126,.06),0 8px 24px rgba(23,66,126,.08);--skuggi-hatt:0 2px 4px rgba(16,35,63,.16),0 20px 48px rgba(16,35,63,.26);--ljosbrun:inset 0 1px 0 rgba(255,255,255,.95);--glans:rgba(23,66,126,.12);--let-fyrirs:"Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;--let-texti:"Segoe UI Variable Text","Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Roboto,sans-serif;--st-0:12px;--st-1:13px;--st-2:15px;--st-3:17px;--st-4:20px;--st-5:28px;--st-6:40px;--st-7:64px;--bil-1:4px;--bil-2:8px;--bil-3:12px;--bil-4:16px;--bil-5:24px;--bil-6:32px;--bil-7:48px;--rund-s:12px;--rund-m:16px;--rund-l:20px;--rund-merki:7px;--rund-takki:12px;--snerta:44px;--lesmal:68ch;--hreyfing:.18s ease}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--grunnur:#0E1420;--flotur:#161E2D;--kort:#1B2536;--jadar:#34425F;--jadar-mjukur:#2A3852;--blek:#E8EDF6;--blek-2:#B6C2D6;--blek-3:#8E9DB6;--hreimur:#8FB0E6;--hreimur-djup:#10233F;--hreimur-mid:#1B3A63;--hreimur-ton:#2B558C;--brynt:#FF8599;--vidvorun:#F0A64A;--rolegt:#8E9DB6;--takki:#263349;--takki-blek:#E8EDF6;--tom:#223049;--hetja-blek:#FFFFFF;--hetja-2:#D2DDEE;--hetja-3:#C0CFE6;--hetja-brynt:#FFB8C4;--hetja-takki:#FFFFFF;--fokus:#8FB0E6;--merki-brynt:#FF8599;--merki-vidvorun:#F0A64A;--merki-akvordun:#8FB0E6;--merki-blek:#0E1420;--adal-blek:#0E1420;--brynt-tonn:#3B1D27;--vidvorun-tonn:#3A2B14;--akvordun-tonn:#1E2F4B;--stigull-a:#16304F;--stigull-b:#1B3A63;--stigull-c:#2B558C;--hetja-rammi:#4F6A96;--valin:#1B2B45;--skuggi:0 1px 2px rgba(0,0,0,.28),0 8px 24px rgba(0,0,0,.32);--skuggi-hatt:0 2px 4px rgba(0,0,0,.3),0 20px 48px rgba(0,0,0,.45);--ljosbrun:inset 0 1px 0 rgba(255,255,255,.06);--glans:rgba(43,85,140,.22)}}
+[data-thema=dokkt]{color-scheme:dark;--grunnur:#0E1420;--flotur:#161E2D;--kort:#1B2536;--jadar:#34425F;--jadar-mjukur:#2A3852;--blek:#E8EDF6;--blek-2:#B6C2D6;--blek-3:#8E9DB6;--hreimur:#8FB0E6;--hreimur-djup:#10233F;--hreimur-mid:#1B3A63;--hreimur-ton:#2B558C;--brynt:#FF8599;--vidvorun:#F0A64A;--rolegt:#8E9DB6;--takki:#263349;--takki-blek:#E8EDF6;--tom:#223049;--hetja-blek:#FFFFFF;--hetja-2:#D2DDEE;--hetja-3:#C0CFE6;--hetja-brynt:#FFB8C4;--hetja-takki:#FFFFFF;--fokus:#8FB0E6;--merki-brynt:#FF8599;--merki-vidvorun:#F0A64A;--merki-akvordun:#8FB0E6;--merki-blek:#0E1420;--adal-blek:#0E1420;--brynt-tonn:#3B1D27;--vidvorun-tonn:#3A2B14;--akvordun-tonn:#1E2F4B;--stigull-a:#16304F;--stigull-b:#1B3A63;--stigull-c:#2B558C;--hetja-rammi:#4F6A96;--valin:#1B2B45;--skuggi:0 1px 2px rgba(0,0,0,.28),0 8px 24px rgba(0,0,0,.32);--skuggi-hatt:0 2px 4px rgba(0,0,0,.3),0 20px 48px rgba(0,0,0,.45);--ljosbrun:inset 0 1px 0 rgba(255,255,255,.06);--glans:rgba(43,85,140,.22)}
+
+/* ---- grunnur ---------------------------------------------------------- */
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:12px}
+body{background:var(--grunnur);color:var(--blek);
+  font:400 var(--st-2)/1.5 var(--let-texti);overflow-wrap:anywhere;
+  font-variant-numeric:tabular-nums;
+  background-image:radial-gradient(1200px 480px at 50% -120px,var(--glans),transparent 70%);
+  background-repeat:no-repeat;
+  transition:background-color var(--hreyfing),color var(--hreyfing)}
+a{color:var(--hreimur);text-decoration-thickness:1px;text-underline-offset:2px}
+a:hover{color:var(--blek)}
+:focus-visible{outline:3px solid var(--fokus);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+b,strong{font-weight:600}
+.lesmal,p{max-width:var(--lesmal)}
+section{scroll-margin-top:12px}
+
+/* ---- síðan ------------------------------------------------------------ */
+.blad{max-width:1280px;margin:0 auto;padding:var(--bil-6) var(--bil-5) var(--bil-7);
+  display:flex;flex-direction:column;gap:var(--bil-5)}
+.blad.simi{max-width:640px;padding:var(--bil-5) var(--bil-4) 96px;gap:var(--bil-4)}
+.dalkar{display:flex;flex-wrap:wrap;gap:var(--bil-5);align-items:flex-start}
+.megin{flex:999 1 640px;min-width:0;display:flex;flex-direction:column;gap:var(--bil-5)}
+.hlid{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:var(--bil-5)}
+
+/* ---- haus: setning, ferskleiki --------------------------------------- */
+.haus{display:flex;flex-wrap:wrap;justify-content:space-between;
+  align-items:flex-end;gap:var(--bil-4)}
+.haus-adal{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:var(--bil-2)}
+.augabrun{font-size:var(--st-1);font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--blek-3)}
+h1{margin:0;font:700 var(--st-6)/1.15 var(--let-fyrirs);letter-spacing:-.015em;
+  max-width:24ch}
+h1 .brynt,.tala-brynt{color:var(--brynt)}
+.vid{margin:0;font-size:var(--st-3);color:var(--blek-2)}
+.haus-hlid{flex:1 1 220px;font-size:var(--st-1);color:var(--blek-3);text-align:right;
+  display:flex;flex-direction:column;gap:var(--bil-1)}
+.haus-hlid p{margin:0;max-width:none}
+.stimpill{display:inline-block}
+.stimpill.gamalt-gogn,.gamalt{display:block;margin:0;padding:var(--bil-3) var(--bil-4);
+  border-radius:var(--rund-s);border:2px solid var(--brynt);background:var(--flotur);
+  color:var(--brynt);font-weight:600;font-size:var(--st-2);text-align:left;max-width:none}
+.kerfi-lina{font-size:var(--st-1);color:var(--blek-3)}
+.kerfi-lina.athuga{color:var(--vidvorun);font-weight:600}
+
+/* ---- kaflafyrirsögn --------------------------------------------------- */
+h2{margin:0;font:600 var(--st-1)/1.4 var(--let-texti);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--blek-3)}
+.kaflahaus{display:flex;justify-content:space-between;align-items:baseline;
+  flex-wrap:wrap;gap:var(--bil-2)}
+.kaflahaus .hja{font-size:var(--st-1);color:var(--blek-3)}
+
+/* ---- yfirborð: spjald, listi ----------------------------------------- */
+.spjald,.listi,details.spjald{background:var(--flotur);border-radius:var(--rund-m);
+  border:1px solid var(--jadar-mjukur);box-shadow:var(--skuggi),var(--ljosbrun);
+  transition:background-color var(--hreyfing),box-shadow var(--hreyfing)}
+.spjald{padding:var(--bil-5) var(--bil-5);display:flex;flex-direction:column;gap:var(--bil-3)}
+.listi{display:flex;flex-direction:column;overflow:hidden}
+.atridi{display:flex;flex-wrap:wrap;gap:var(--bil-4);align-items:center;
+  padding:var(--bil-4) var(--bil-5);border-bottom:1px solid var(--jadar-mjukur)}
+.atridi:last-child{border-bottom:0}
+.atridi-efni{flex:1 1 300px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.atridi-titill{font-size:var(--st-3);font-weight:600;line-height:1.35;max-width:var(--lesmal)}
+.atridi-undir{font-size:var(--st-2);color:var(--blek-2);max-width:var(--lesmal)}
+.skref{font-size:var(--st-2);color:var(--blek-2)}
+.rolegt-bord{padding:var(--bil-4) var(--bil-5);font-size:var(--st-3);color:var(--blek-2)}
+.tomt-t{color:var(--blek-2);margin:0}
+.smatt{font-size:var(--st-1);color:var(--blek-3)}
+
+/* ---- merkimiðar (pillur) — orð fylgir alltaf lit --------------------- */
+.merki{display:inline-flex;align-items:center;font-size:var(--st-0);font-weight:600;
+  letter-spacing:.02em;color:var(--merki-blek);border-radius:var(--rund-merki);
+  padding:4px 9px;line-height:1.3;white-space:nowrap;flex:0 0 auto}
+.merki.brynt{background:var(--merki-brynt)}
+.merki.vidvorun{background:var(--merki-vidvorun)}
+.merki.akvordun,.merki.blar{background:var(--merki-akvordun)}
+.merki.rolegt{background:var(--takki);color:var(--blek-2)}
+.merki.utan{background:transparent;color:var(--brynt);border:1.5px solid var(--brynt)}
+.aldur{color:var(--blek-3);white-space:nowrap;font-variant-numeric:tabular-nums}
+.aldur.vidvorun,.vid-t{color:var(--vidvorun);font-weight:600}
+.brynt-t{color:var(--brynt);font-weight:600}
+
+/* ---- hnappur / snertiflötur ------------------------------------------- */
+.takki,.hnappur{display:inline-flex;align-items:center;justify-content:center;
+  min-height:var(--snerta);min-width:var(--snerta);padding:0 var(--bil-4);
+  border-radius:var(--rund-takki);background:var(--takki);color:var(--takki-blek);
+  font-weight:600;font-size:var(--st-2);text-decoration:none;white-space:nowrap;
+  border:1px solid transparent;
+  transition:background-color var(--hreyfing),box-shadow var(--hreyfing),transform var(--hreyfing)}
+.takki:hover,.hnappur:hover{color:var(--takki-blek);box-shadow:var(--skuggi)}
+.takki:active,.hnappur:active{transform:translateY(1px)}
+.takki.adal{background:var(--hreimur);color:var(--adal-blek)}
+.takki.adal:hover{color:var(--adal-blek)}
+
+/* ---- hetjan: gamli dökkblái stigullinn -------------------------------- */
+.hetja{position:relative;overflow:hidden;color:var(--hetja-blek);
+  border-radius:var(--rund-l);padding:var(--bil-5) var(--bil-6);
+  display:flex;flex-wrap:wrap;align-items:center;gap:var(--bil-5);
+  background:linear-gradient(135deg,var(--stigull-a) 0%,var(--stigull-b) 55%,var(--stigull-c) 100%);
+  border:1px solid var(--hetja-rammi);box-shadow:var(--skuggi-hatt)}
+.hetja::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(640px 260px at 85% -40%,rgba(255,255,255,.14),transparent 70%)}
+.hetja>*{position:relative}
+.hetja-tala{display:flex;flex-direction:column;align-items:center;min-width:96px}
+.hetja-tala b{font:700 var(--st-7)/.95 var(--let-fyrirs);letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.hetja-tala b.ord{font-size:var(--st-5);line-height:1.1}
+.hetja-tala span{font-size:var(--st-1);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--hetja-3);margin-top:var(--bil-1)}
+.hetja-efni{flex:1 1 320px;display:flex;flex-direction:column;gap:var(--bil-2);min-width:0}
+.hetja-augabrun{font-size:var(--st-1);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--hetja-3);font-weight:600}
+.hetja-augabrun .brynt,.hetja .utan,.bordi .utan{color:var(--hetja-brynt)}
+.hetja .utan,.bordi .utan{display:inline-block;font-size:var(--st-0);font-weight:600;
+  border:1.5px solid var(--hetja-brynt);border-radius:var(--rund-merki);
+  padding:2px 8px;margin-left:var(--bil-2);text-transform:none;letter-spacing:.02em}
+.hetja-titill{font:700 var(--st-5)/1.2 var(--let-fyrirs);letter-spacing:-.01em;
+  max-width:var(--lesmal)}
+.hetja-undir{font-size:var(--st-3);color:var(--hetja-2);max-width:var(--lesmal)}
+.hetja-takkar{display:flex;flex-wrap:wrap;gap:var(--bil-2)}
+.hetja .takki{background:var(--hetja-takki);color:#0F1B2D;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.hetja .takki.annar{background:rgba(255,255,255,.1);color:var(--hetja-blek);
+  border-color:rgba(255,255,255,.35);box-shadow:none}
+.hetja .takki.annar:hover{background:rgba(255,255,255,.18)}
+.hetja.rolegt .hetja-augabrun{color:var(--hetja-3)}
+
+/* ---- borðinn: brún í brún efst, setning + næsti frestur --------------- */
+.bordi{position:relative;overflow:hidden;color:var(--hetja-blek);
+  background:linear-gradient(135deg,var(--stigull-a) 0%,var(--stigull-b) 55%,var(--stigull-c) 100%);
+  border-bottom:1px solid var(--hetja-rammi);box-shadow:var(--skuggi-hatt)}
+.bordi::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(900px 320px at 80% -30%,rgba(255,255,255,.14),transparent 70%)}
+.bordi-inni{position:relative;z-index:1;max-width:1280px;margin:0 auto;
+  padding:var(--bil-5) var(--bil-5) calc(var(--bil-6) + 40px);
+  display:flex;flex-direction:column;gap:var(--bil-5)}
+.bordi .haus{align-items:baseline}
+.bordi .augabrun,.bordi .stimpill,.bordi .kerfi-lina{color:var(--hetja-3)}
+.bordi .haus-hlid{color:var(--hetja-3)}
+.bordi .kerfi-lina.athuga{color:var(--hetja-brynt)}
+.bordi h1{color:var(--hetja-blek)}
+.bordi h1 .brynt{color:var(--hetja-brynt)}
+.bordi .vid{color:var(--hetja-2)}
+.bordi-frestur{display:flex;flex-wrap:wrap;align-items:center;gap:var(--bil-5);
+  padding-top:var(--bil-4);border-top:1px solid rgba(255,255,255,.18)}
+.bordi .hetja-tala{min-width:96px}
+.bordi .hetja-efni{flex:1 1 320px}
+.bordi .hetja-takkar{display:flex;flex-wrap:wrap;gap:var(--bil-2)}
+.bordi .takki{background:var(--hetja-takki);color:#0F1B2D;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.bordi .takki.annar{background:rgba(255,255,255,.1);color:var(--hetja-blek);
+  border-color:rgba(255,255,255,.35);box-shadow:none}
+.bordi .takki.annar:hover{background:rgba(255,255,255,.18)}
+.bordi .hetja-augabrun .brynt{color:var(--hetja-brynt)}
+.bordi+.blad{padding-top:0}
+
+/* ---- yfirlitsreitir: fjórir reitir sem skarast við borðann ------------ */
+.yfirlit{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--bil-3);
+  margin-top:-40px;position:relative;z-index:2}
+.reitur{display:flex;flex-direction:column;gap:2px;min-width:0;min-height:var(--snerta);
+  padding:var(--bil-4) var(--bil-4) var(--bil-3);background:var(--flotur);
+  border-radius:var(--rund-m);border:1px solid var(--jadar-mjukur);
+  box-shadow:var(--skuggi),var(--ljosbrun);color:var(--blek);text-decoration:none;
+  transition:box-shadow var(--hreyfing),transform var(--hreyfing)}
+.reitur:hover{color:var(--blek);box-shadow:var(--skuggi-hatt),var(--ljosbrun);transform:translateY(-1px)}
+.reitur .heiti{font-size:var(--st-1);font-weight:600;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--blek-3)}
+.reitur .tala{font:700 var(--st-6)/1.1 var(--let-fyrirs);letter-spacing:-.02em;color:var(--blek)}
+.reitur .tala.brynt{color:var(--brynt)}
+.reitur .tala.vidvorun{color:var(--vidvorun)}
+.reitur .undir{font-size:var(--st-1);color:var(--blek-2)}
+.reitur .undir .brynt{color:var(--brynt);font-weight:600}
+
+/* ---- vikan: mán–sun, stutt lína á hvert atriði ------------------------ */
+.vika-rammi{min-width:0}
+.vika{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:var(--bil-2)}
+.vikudagur{display:flex;flex-direction:column;gap:var(--bil-1);min-width:0;
+  padding:var(--bil-2) var(--bil-3);border-radius:var(--rund-s);background:var(--kort);
+  border:1px solid var(--jadar-mjukur)}
+.vikudagur.helgi{background:transparent}
+.vikudagur.idag{border-color:var(--hreimur);box-shadow:inset 0 3px 0 var(--hreimur)}
+.vd-haus{font-size:var(--st-1);font-weight:600;color:var(--blek-2);
+  padding-bottom:var(--bil-1);border-bottom:1px solid var(--jadar-mjukur)}
+.vikudagur.idag .vd-haus{color:var(--hreimur)}
+.vd-lina{position:relative;padding-left:12px;font-size:var(--st-1);line-height:1.4;color:var(--blek)}
+.vd-lina::before{content:"";position:absolute;left:0;top:.5em;width:6px;height:6px;
+  border-radius:50%;background:var(--rolegt)}
+.vd-lina.frestur::before{background:var(--brynt)}
+.vd-lina.thinghald::before{background:var(--hreimur)}
+.vd-lina.utan{color:var(--brynt);font-weight:600}
+.vd-lina b{font-weight:600}
+.vd-tomt{font-size:var(--st-1);color:var(--blek-3)}
+.vika-skyring{display:flex;flex-wrap:wrap;gap:var(--bil-4);font-size:var(--st-1);color:var(--blek-3)}
+.vika-skyring span{position:relative;padding-left:12px}
+.vika-skyring span::before{content:"";position:absolute;left:0;top:.5em;width:6px;height:6px;
+  border-radius:50%;background:var(--rolegt)}
+.vika-skyring .frestur::before{background:var(--brynt)}
+.vika-skyring .thinghald::before{background:var(--hreimur)}
+
+/* ---- tímalína: einn dálkur á dag -------------------------------------- */
+.timalina{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:var(--bil-2);
+  align-items:end}
+.dagur{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  gap:var(--bil-2);min-width:0}
+.sula{width:100%;border-radius:4px;background:var(--rolegt);
+  transition:height var(--hreyfing),background-color var(--hreyfing)}
+.sula.tom{background:var(--tom)}
+.sula.brynt{background:var(--brynt)}
+.dagur span{font-size:var(--st-0);color:var(--blek-3);line-height:1.2;
+  overflow:hidden;text-overflow:clip;white-space:nowrap;max-width:100%}
+.dagur.idag span{color:var(--blek);font-weight:600}
+.timalina-tala,.kvardi{font-size:var(--st-1);color:var(--blek-3)}
+.timalina-tala .brynt,.kvardi .brynt{color:var(--brynt);font-weight:600}
+.kvardi{display:flex;justify-content:space-between;gap:var(--bil-2);margin-top:var(--bil-2)}
+
+/* ---- stuttir listar: þinghöld, póstur -------------------------------- */
+.stutt{display:flex;flex-direction:column;gap:0;font-size:var(--st-2)}
+.stutt>*{padding:var(--bil-2) 0;border-top:1px solid var(--jadar-mjukur)}
+.stutt>*:first-child{padding-top:0;border-top:0}
+.stutt .lina{display:flex;justify-content:space-between;gap:var(--bil-2);align-items:baseline}
+.stutt .lina>span:first-child{min-width:0}
+ul.listi,ol.listi{list-style:none;margin:0;padding:0;background:none;border:0;box-shadow:none;
+  border-radius:0;overflow:visible}
+ul.listi li,ol.listi li{padding:var(--bil-2) 0;border-top:1px solid var(--jadar-mjukur)}
+ul.listi li:first-child,ol.listi li:first-child{border-top:0;padding-top:0}
+.listi .d,.stutt b{font-weight:600;color:var(--blek)}
+.listi .u{font-size:var(--st-1);color:var(--blek-3)}
+
+/* ---- details: samanbrotinn kafli með ör ------------------------------- */
+details.spjald{padding:0}
+details.spjald>summary{padding:0 var(--bil-5)}
+details.spjald>.inni,details.spjald>.upplysingar-efni{padding:0 var(--bil-5) var(--bil-4)}
+summary{list-style:none;cursor:pointer;min-height:var(--snerta);display:flex;
+  align-items:center;gap:var(--bil-3);font-weight:600;color:var(--blek-2);
+  user-select:none;border-radius:var(--rund-m)}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"";flex:0 0 auto;width:8px;height:8px;margin-left:2px;
+  border-right:2px solid var(--blek-3);border-bottom:2px solid var(--blek-3);
+  transform:rotate(-45deg);transition:transform var(--hreyfing)}
+details[open]>summary::before{transform:rotate(45deg)}
+summary.h2,summary>h2{font-size:var(--st-1);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--blek-3)}
+.upplysingar-efni,.inni{display:flex;flex-direction:column;gap:var(--bil-2);
+  font-size:var(--st-2);color:var(--blek-2)}
+.inni .spjald{padding:var(--bil-3) 0;margin:0;border:0;border-top:1px solid var(--jadar-mjukur);
+  border-radius:0;box-shadow:none}
+
+/* ---- kerfið (neðst) --------------------------------------------------- */
+details.kerfi-nedst{border-top:1px solid var(--jadar);padding-top:var(--bil-2);color:var(--blek-3)}
+details.kerfi-nedst>summary{font-weight:500;color:var(--blek-3);font-size:var(--st-1)}
+.kerfi{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:var(--bil-3);margin:var(--bil-2) 0 0}
+.kerfireitur{background:var(--flotur);border:1px solid var(--jadar-mjukur);
+  border-left:3px solid var(--rolegt);border-radius:var(--rund-s);
+  padding:var(--bil-3) var(--bil-4);min-width:0;box-shadow:var(--skuggi)}
+.kerfireitur.k-vidvorun,.kerfireitur.k-vantar{border-left-color:var(--vidvorun)}
+.kerfireitur.k-brynt{border-left-color:var(--brynt)}
+.k-haus{font:600 var(--st-0)/1 var(--let-texti);letter-spacing:.10em;
+  text-transform:uppercase;color:var(--blek-3)}
+.k-ord{margin:6px 0 2px;font:600 var(--st-1)/1.2 var(--let-texti);color:var(--blek)}
+.k-vidvorun .k-ord,.k-vantar .k-ord{color:var(--vidvorun)}
+.k-brynt .k-ord{color:var(--brynt)}
+.k-texti{margin:0;font-size:var(--st-1);line-height:1.45;color:var(--blek-2)}
+.k-timi{margin:4px 0 0;font-size:var(--st-0);color:var(--blek-3)}
+.vantar-listi{margin:var(--bil-2) 0 0;padding-left:18px;font-size:var(--st-1)}
+footer{font-size:var(--st-0);color:var(--blek-3)}
+footer p{margin:0 0 3px;max-width:none}
+
+/* ---- neðsta stika (sími) --------------------------------------------- */
+nav.stika{position:fixed;left:0;right:0;bottom:0;z-index:9;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  border-top:1px solid var(--jadar);background:var(--flotur);
+  box-shadow:0 -4px 16px rgba(16,35,63,.08);
+  padding-bottom:env(safe-area-inset-bottom)}
+nav.stika a{min-height:56px;display:flex;align-items:center;justify-content:center;
+  font-size:var(--st-2);font-weight:500;color:var(--blek-2);text-decoration:none;
+  transition:color var(--hreyfing),background-color var(--hreyfing)}
+nav.stika a:hover,nav.stika a:focus-visible{color:var(--blek);background:var(--kort)}
+nav.stika a.virkt{color:var(--hreimur);font-weight:600;box-shadow:inset 0 3px 0 var(--hreimur)}
+/* tala við hverja sýn (lota 15): hreimur, brýnt þegar eitthvað er brýnt */
+nav.stika a{gap:.45em}
+nav.stika .stika-tala{display:inline-flex;align-items:center;justify-content:center;
+  min-width:1.6em;height:1.6em;padding:0 .45em;border-radius:999px;font-size:var(--st-1);
+  font-weight:700;line-height:1;font-variant-numeric:tabular-nums;
+  background:var(--akvordun-tonn);color:var(--hreimur)}
+nav.stika .stika-tala.brynt{background:var(--brynt-tonn);color:var(--brynt)}
+
+/* ---- sími og þröngir gluggar ----------------------------------------- */
+@media (max-width:640px){
+  .blad{padding:var(--bil-5) var(--bil-4) var(--bil-7);gap:var(--bil-4)}
+  h1{font-size:var(--st-5);max-width:none}
+  .haus-hlid{text-align:left;align-items:flex-start}
+  .hetja{padding:var(--bil-4) var(--bil-4);gap:var(--bil-4);border-radius:var(--rund-m)}
+  .hetja-tala{min-width:64px}
+  .hetja-tala b{font-size:52px}
+  .hetja-efni{flex:1 1 180px}
+  .hetja-titill{font-size:var(--st-4)}
+  .hetja-undir{font-size:var(--st-2)}
+  .hetja-takkar{flex:1 1 100%}
+  .hetja .takki{flex:1 1 auto}
+  .spjald{padding:var(--bil-4)}
+  .atridi{padding:var(--bil-4);gap:var(--bil-3)}
+  .atridi .takki{flex:1 1 100%}
+  .timalina{gap:3px}
+  .dagur span{font-size:10px;letter-spacing:-.02em}
+  details.spjald>summary{padding:0 var(--bil-4)}
+  details.spjald>.inni,details.spjald>.upplysingar-efni{padding:0 var(--bil-4) var(--bil-3)}
+  .kerfi{grid-template-columns:1fr}
+  .bordi-inni{padding:var(--bil-4) var(--bil-4) calc(var(--bil-5) + 36px);gap:var(--bil-4)}
+  .bordi .hetja-tala{min-width:64px}
+  .bordi .hetja-efni{flex:1 1 180px}
+  .bordi .hetja-takkar{flex:1 1 100%}
+  .yfirlit{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--bil-2);margin-top:-36px}
+  .reitur{padding:var(--bil-3) var(--bil-3) var(--bil-2)}
+  .reitur .tala{font-size:var(--st-5)}
+  .vika-rammi{overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x proximity;margin:0 calc(-1*var(--bil-4));padding:0 var(--bil-4) var(--bil-2)}
+  .vika{grid-template-columns:repeat(7,152px);width:max-content}
+  .vikudagur{scroll-snap-align:start}
+}
+
+/* ---- hreyfing og prentun ---------------------------------------------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  body{background:#fff;color:#000}
+  .takki,.hnappur,nav.stika{display:none}
+  details{display:block}details>*{display:block}
+  .hetja{background:#fff;color:#000;border:1pt solid #000;box-shadow:none}
+  .hetja *{color:#000!important}
+  .spjald,.listi,.kerfireitur{box-shadow:none;border-color:#999}}
+
+/* ==== HNAPPAKERFI (utlitsryni 13.10.2026) — fer aftast í CSS ============ */
+
+/* 1. aðalaðgerð: fyllt, ein á spjaldi/borða (.takki.adal er þegar til) */
+.takki.adal{box-shadow:var(--skuggi)}
+.takki.adal:hover{background:var(--hreimur-ton);color:var(--adal-blek)}
+[data-thema=dokkt] .takki.adal:hover,.takki.adal:hover{filter:brightness(1.08)}
+.bordi .takki.adal,.hetja .takki.adal{background:var(--hetja-takki);color:#0F1B2D;filter:none}
+
+/* 2. aukaaðgerð: hljóðlátur textahnappur — engin fylling fyrr en sveimað er */
+.takki.texti{background:transparent;color:var(--hreimur);padding:0 var(--bil-2);
+  margin:0 calc(-1*var(--bil-2));border:0;font-weight:600;gap:4px;box-shadow:none}
+.takki.texti:hover,.takki.texti:focus-visible{background:var(--takki);color:var(--blek);box-shadow:none}
+.takki.texti .or{font-weight:400;opacity:.8}
+.bordi .takki.texti,.hetja .takki.texti{color:var(--hetja-blek);background:transparent}
+.bordi .takki.texti:hover,.hetja .takki.texti:hover{background:rgba(255,255,255,.12);color:var(--hetja-blek)}
+
+/* 3. hljóðlát aðgerð: hak — tákn með orði á sveimi, 44 px snertiflötur */
+.hak{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  min-width:var(--snerta);min-height:var(--snerta);padding:0;margin:-10px 0;
+  border:0;background:transparent;color:var(--blek-3);border-radius:var(--rund-takki);
+  cursor:pointer;flex:0 0 auto;font:600 var(--st-0)/1 var(--let-texti);
+  transition:color var(--hreyfing),background-color var(--hreyfing)}
+.hak svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;display:block}
+.hak:hover,.hak:focus-visible{color:var(--hreimur);background:var(--takki)}
+.hak:active{transform:translateY(1px)}
+.hak .hak-ord{position:absolute;right:calc(100% + 4px);top:50%;transform:translateY(-50%);
+  background:var(--flotur);color:var(--blek);border:1px solid var(--jadar);
+  border-radius:6px;padding:4px 8px;white-space:nowrap;box-shadow:var(--skuggi);
+  opacity:0;pointer-events:none;transition:opacity var(--hreyfing)}
+.hak:hover .hak-ord,.hak:focus-visible .hak-ord{opacity:1}
+.bordi .hak,.hetja .hak{color:var(--hetja-3)}
+.bordi .hak:hover,.hetja .hak:hover,.bordi .hak:focus-visible{color:var(--hetja-blek);background:rgba(255,255,255,.12)}
+.atridi:hover .hak,.atridi:focus-within .hak,li:hover .hak,li:focus-within .hak,
+.stutt>*:hover .hak{color:var(--hreimur)}
+
+/* 4. tenglar: ytri tengill fær ör út; reitir og stika óbreytt */
+.takki.texti.ut .or::after{content:"\2197"}
+
+/* --- raðir: merki | efni | aðgerð | hak — aðgerðir í föstum dálki hægra megin */
+.atridi{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;
+  grid-template-areas:"merki efni adgerd hak";align-items:start;
+  gap:var(--bil-3) var(--bil-4);padding:var(--bil-4) var(--bil-5)}
+.atridi:not(:has(.merki)){grid-template-columns:minmax(0,1fr) auto auto;
+  grid-template-areas:"efni adgerd hak"}
+.atridi>.merki{grid-area:merki;margin-top:3px;justify-self:start}
+.atridi>.atridi-efni{grid-area:efni}
+.atridi>.takki,.atridi>.skref{grid-area:adgerd;align-self:start;justify-self:end;
+  margin-top:0}
+.atridi>.hak{grid-area:hak;align-self:start;margin-top:-6px}
+.atridi>.skref{font-size:var(--st-1);color:var(--blek-3);padding-top:4px}
+ul.listi li,ol.listi li,.stutt>*{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  gap:var(--bil-3);align-items:start}
+.stutt .lina{display:grid}
+.li-efni{min-width:0;line-height:1.45}
+.li-efni .u{font-size:var(--st-2);color:var(--blek-2)}
+.li-efni .smatt{display:block;margin-top:2px}
+.li-efni .aldur{margin-left:var(--bil-2)}
+.kvardi>span:first-child,.kvardi>span:last-child{white-space:nowrap}
+.kvardi>span:nth-child(2){text-align:center;flex:1 1 auto}
+/* þröngir dálkar (hliðardálkur): sama uppröðun og í síma */
+.hlid .atridi{grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"merki hak" "efni efni" "adgerd adgerd";gap:var(--bil-2) var(--bil-3)}
+.hlid .atridi:not(:has(.merki)){grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"efni hak" "adgerd adgerd"}
+.hlid .atridi>.takki{justify-self:start}
+ul.listi li .hak,.stutt>* .hak{margin-top:-8px}
+ul.listi li>.takki.texti{grid-column:1;justify-self:start}
+
+/* --- merki: tónuð pilla, orðið ber litinn; .sterkt heldur fullum lit (≤ 2 d. / liðinn) */
+.merki.brynt{background:var(--brynt-tonn);color:var(--brynt)}
+.merki.vidvorun{background:var(--vidvorun-tonn);color:var(--vidvorun)}
+.merki.akvordun,.merki.blar{background:var(--akvordun-tonn);color:var(--hreimur)}
+.merki.brynt.sterkt{background:var(--merki-brynt);color:var(--merki-blek)}
+.merki.vidvorun.sterkt{background:var(--merki-vidvorun);color:var(--merki-blek)}
+
+/* --- hetja/borði: titill mest 2 línur; hakið eitt fer upp í hornið */
+.hetja-titill{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bordi-frestur{position:relative}
+.bordi .hetja-takkar{align-items:center}
+.bordi .hetja-takkar.hljodlatt{position:absolute;top:var(--bil-4);right:0;flex:0 0 auto}
+.bordi .hetja-takkar.hljodlatt .hak{margin:0}
+
+/* --- vikan: það sem er ekki frestur/þinghald dofnar */
+.vd-lina:not(.frestur):not(.thinghald){color:var(--blek-3)}
+.vd-lina:not(.frestur):not(.thinghald) b{color:var(--blek-2)}
+
+/* --- samanbrot: „Afgreitt í dag“ sést ekki tómt */
+details#afgreitt.tomt{display:none}
+
+@media (max-width:640px){
+  .atridi{grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"merki hak" "efni efni" "adgerd adgerd";gap:var(--bil-2) var(--bil-3);
+    padding:var(--bil-4)}
+  .atridi:not(:has(.merki)){grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"efni hak" "adgerd adgerd"}
+  .atridi>.takki{justify-self:start;flex:none;width:auto}
+  .atridi>.hak{margin-top:-10px;margin-right:-8px}
+  .hak{flex-direction:column;gap:2px}
+  .hak .hak-ord{position:static;transform:none;opacity:1;background:none;border:0;
+    box-shadow:none;padding:0;color:inherit;font-size:10px;letter-spacing:.02em}
+  ul.listi li .hak,.stutt>* .hak{margin-top:-6px;margin-right:-8px}
+  .bordi .hetja-takkar.hljodlatt{top:var(--bil-3)}
+  .bordi .hetja-takkar.hljodlatt .hak{color:var(--hetja-2)}
+}
+@media print{.hak{display:none}}
+
+/* ==== MÆLABORÐ 2.0 — SAMEIGINLEGT (lota 17) ============================= */
+
+/* hnappar, þrjú stig: .takki.adal (fylltur) · .takki.texti / .takki.utlina
+   (aukaaðgerð) · .hak (hljóðlát). .litill = 36 px í síustikum. */
+.takki{gap:4px}
+.takki.utlina{background:transparent;color:var(--hreimur);border-color:var(--hreimur);
+  box-shadow:none}
+.takki.utlina:hover{background:var(--takki);color:var(--blek)}
+.takki.litill{min-height:36px;min-width:0;font-size:var(--st-1);padding:0 var(--bil-3)}
+.takki.texti{min-height:var(--snerta)}
+
+/* hak: hringur og orðið „Afgreitt“ alltaf sýnilegt undir — sama á öllum tækjum */
+.hak{flex-direction:column;gap:1px;min-width:48px;min-height:var(--snerta);
+  padding:2px 4px;margin:0;line-height:1.1}
+.hak svg{width:24px;height:24px}
+.hak .hak-ord{position:static;transform:none;opacity:1;background:none;border:0;
+  box-shadow:none;padding:0;color:inherit;font-size:11px;letter-spacing:0;
+  pointer-events:none}
+.atridi>.hak,ul.listi li .hak,.stutt>* .hak{margin-top:0}
+
+/* merki: viðbót við .merki — tegund pósts og staða */
+.merki.tillaga,.merki.thinghald{background:var(--akvordun-tonn);color:var(--hreimur)}
+.merki.kvittun{background:transparent;color:var(--blek-2);border:1.5px solid var(--rolegt)}
+.merki.ostadf{background:transparent;color:var(--brynt);border:1.5px solid var(--brynt)}
+.merki.litid{font-size:11px;padding:2px 7px}
+
+/* litapunktur fremst í línu */
+.punktur{width:9px;height:9px;border-radius:50%;background:var(--rolegt);flex:0 0 auto}
+.punktur.brynt{background:var(--brynt)}.punktur.vidvorun{background:var(--vidvorun)}
+.punktur.akvordun{background:var(--hreimur)}
+
+/* síupillur (aria-pressed) — Pósthólf og Frestir */
+.pillur{display:flex;flex-wrap:wrap;gap:var(--bil-2);align-items:center}
+.pilla{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;
+  border-radius:999px;border:1px solid var(--jadar);background:transparent;
+  font:600 13.5px/1 var(--let-texti);color:var(--blek-2);cursor:pointer;white-space:nowrap}
+.pilla:hover{background:var(--takki);color:var(--blek)}
+.pilla[aria-pressed=true]{background:var(--hreimur);border-color:var(--hreimur);
+  color:var(--adal-blek)}
+.pilla .pilla-tala{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* nafn máls með málsnúmeri: sérlína undir titli */
+.mal-lina{font-size:var(--st-1);color:var(--blek-2)}
+.mal-lina b{color:var(--blek)}
+
+/* stika neðst (ósk Evu, lota 17, 2. umferð): róleg — full breidd og
+   auðsmellt, en bakgrunnur eins og síðan, hárfín lína efst, enginn skuggi,
+   15 px letur, 52 px hæð. Talan dempuð og ófyllt (brýn tala í brýna litnum).
+   Valinn flipi: hreimur á texta og 2 px lína efst — ekkert annað. */
+nav.stika{gap:0;padding:0 var(--bil-4) env(safe-area-inset-bottom);
+  background:var(--grunnur);border-top:1px solid var(--jadar-mjukur);box-shadow:none}
+nav.stika a{min-height:52px;font-size:var(--st-2);font-weight:500;gap:.5em;
+  border:0;border-radius:0;background:transparent;color:var(--blek-2)}
+nav.stika a:hover,nav.stika a:focus-visible{background:transparent;color:var(--blek)}
+nav.stika a.virkt{background:transparent;color:var(--hreimur);font-weight:600;
+  box-shadow:inset 0 2px 0 var(--hreimur)}
+nav.stika .stika-tala{min-width:0;height:auto;padding:0;border-radius:0;
+  background:transparent;color:var(--blek-3);font-size:var(--st-1);font-weight:600}
+nav.stika .stika-tala.brynt{background:transparent;color:var(--brynt)}
+nav.stika a.virkt .stika-tala{background:transparent;color:var(--hreimur)}
+nav.stika a.virkt .stika-tala.brynt{background:transparent;color:var(--brynt)}
+@media (max-width:640px){nav.stika{padding:0 var(--bil-2) env(safe-area-inset-bottom)}
+  nav.stika a{gap:.4em}}
+
+/* samanbrot: hjálína hægra megin í summary */
+details.spjald>summary .hja{margin-left:auto;font-weight:400;font-size:var(--st-1);
+  color:var(--blek-3);letter-spacing:0;text-transform:none}
+
+/* ---- þétti borðinn (~150–160 px): setning vinstra, næsti lögbundni frestur
+   hægra megin í einni einingu, fótur með tenglum og kerfislínu ----------- */
+.bordi-rist{position:relative;z-index:1;max-width:1280px;margin:0 auto;
+  padding:14px var(--bil-5) 10px;display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,780px);gap:6px var(--bil-6);
+  align-items:center}
+.bordi-rist .augabrun{font-size:11px;letter-spacing:.08em}
+.bordi-rist .haus-adal{flex:none;gap:0}
+.bordi-rist h1{font-size:30px;line-height:1.15;margin:2px 0 0;max-width:none}
+.bordi-rist .vid{font-size:var(--st-2);margin:2px 0 0}
+.bordi-rist .bordi-frestur{display:grid;grid-template-columns:auto minmax(0,1fr) auto;
+  gap:var(--bil-4);align-items:center;padding:0 0 0 28px;border-top:0;
+  border-left:1px solid rgba(255,255,255,.2);flex-wrap:nowrap}
+.bordi-rist .hetja-tala{min-width:84px}
+.bordi-rist .hetja-tala b{font-size:52px}
+.bordi-rist .hetja-tala b.ord{font-size:var(--st-5)}
+.bordi-rist .hetja-tala span{font-size:11px;letter-spacing:.1em}
+.bordi-rist .hetja-efni{gap:2px;flex:none}
+.bordi-rist .hetja-augabrun{font-size:11px}
+.bordi-rist .hetja-titill{font:700 17px/1.25 var(--let-fyrirs);margin:1px 0}
+.bordi-rist .hetja-undir{font-size:var(--st-1);color:var(--hetja-2)}
+.bordi-rist .hetja-takkar{display:flex;flex-wrap:nowrap;gap:6px;align-items:center}
+.bordi .hak{color:var(--hetja-3)}
+.bordi-fotur{grid-column:1/-1;display:flex;flex-wrap:wrap;justify-content:space-between;
+  align-items:center;gap:6px var(--bil-4);border-top:1px solid rgba(255,255,255,.18);
+  padding-top:6px;margin-top:0}
+.bordi-flisar{display:flex;flex-wrap:wrap;gap:6px}
+.bordi-flis{display:inline-flex;align-items:center;gap:4px;min-height:28px;padding:0 12px;
+  border-radius:999px;border:1px solid rgba(255,255,255,.3);font-size:12.5px;
+  color:var(--hetja-blek);text-decoration:none;background:rgba(255,255,255,.06)}
+.bordi-flis:hover{background:rgba(255,255,255,.16);color:var(--hetja-blek)}
+.bordi-flis.brynt{border-color:var(--hetja-brynt);color:var(--hetja-brynt)}
+.bordi-kerfi{display:flex;flex-wrap:wrap;gap:4px var(--bil-3);align-items:center;
+  font-size:11px;color:var(--hetja-3)}
+.bordi-kerfi p{margin:0;max-width:none}
+.bordi-rist .stimpill.gamalt-gogn{padding:2px 8px;font-size:12px;border-width:1px;
+  background:transparent;color:var(--hetja-brynt);border-color:var(--hetja-brynt)}
+.bordi-rist .kerfi-lina{font-size:11px}
+@media (max-width:1000px){
+  .bordi-rist{grid-template-columns:minmax(0,1fr)}
+  .bordi-rist .bordi-frestur{border-left:0;padding:var(--bil-3) 0 0;
+    border-top:1px solid rgba(255,255,255,.18)}}
+@media (max-width:640px){
+  .bordi-rist{display:flex;flex-direction:column;align-items:stretch;gap:8px;
+    padding:10px var(--bil-4)}
+  .bordi-rist h1{font-size:22px}
+  .bordi-rist .vid{font-size:var(--st-1)}
+  .bordi-rist .bordi-frestur{border:1px solid rgba(255,255,255,.25);
+    border-radius:14px;padding:10px var(--bil-3) 8px;background:rgba(255,255,255,.08);
+    grid-template-columns:auto minmax(0,1fr);gap:2px var(--bil-3);align-items:start}
+  .bordi-rist .hetja-augabrun .utan{margin-left:0}
+  .bordi-rist .hetja-undir{font-size:12.5px}
+  .bordi-rist .hetja-takkar .takki{min-height:40px}
+  .bordi-rist .hetja-tala{min-width:60px}
+  .bordi-rist .hetja-tala b{font-size:40px}
+  .bordi-rist .hetja-titill{font-size:16px}
+  .bordi-rist .hetja-takkar{grid-column:1/-1;justify-content:space-between}
+  .bordi-rist .hetja-takkar .takki{flex:1}
+  .bordi-fotur{border:0;padding:0}
+  .bordi-kerfi .kerfi-lina,.bordi-kerfi .stimpill:not(.gamalt-gogn){display:none}}
+.bordi-rist .bordi-frestur>.hetja-efni:only-child{grid-column:1/-1}
+
+/* ---- stóri borðinn (3. umferð Evu): sama og fyrir lotu 17 á tölvu —
+   .bordi-inni/.haus/.bordi-frestur og reitirnir (.yfirlit) sem skarast við
+   hann. Í síma þjappað (~fyrri þétti borðinn) og tenglastrimillinn í stað
+   reitanna. ------------------------------------------------------------ */
+.bordi-stor .bordi-fotur{display:none}
+.bordi+.blad.thett>.yfirlit{margin-top:-64px}
+@media (max-width:640px){
+  .yfirlit{display:none}
+  .bordi-stor .bordi-fotur{display:block}
+  .bordi-stor .bordi-inni{padding:10px var(--bil-4) 12px;gap:8px}
+  .bordi-stor .haus{gap:2px}
+  .bordi-stor .haus-adal{flex:none;gap:0}
+  .bordi-stor h1{font-size:22px;margin-top:2px}
+  .bordi-stor .vid{font-size:var(--st-1)}
+  .bordi-stor .augabrun{font-size:11px}
+  .bordi-stor .haus-hlid{flex:none}
+  .bordi-stor .haus-hlid .kerfi-lina,
+  .bordi-stor .haus-hlid .stimpill:not(.gamalt-gogn){display:none}
+  .bordi-stor .bordi-frestur{display:grid;grid-template-columns:auto minmax(0,1fr);
+    gap:2px var(--bil-3);align-items:start;padding:10px var(--bil-3) 8px;
+    border:1px solid rgba(255,255,255,.25);border-radius:14px;
+    background:rgba(255,255,255,.08)}
+  .bordi-stor .bordi-frestur>.hetja-efni:only-child{grid-column:1/-1}
+  .bordi-stor .hetja-tala{min-width:60px}
+  .bordi-stor .hetja-tala b{font-size:40px}
+  .bordi-stor .hetja-tala span{font-size:11px}
+  .bordi-stor .hetja-efni{flex:none;gap:2px}
+  .bordi-stor .hetja-augabrun{font-size:11px}
+  .bordi-stor .hetja-augabrun .utan{margin-left:0}
+  .bordi-stor .hetja-titill{font-size:16px}
+  .bordi-stor .hetja-undir{font-size:12.5px}
+  .bordi-stor .hetja-takkar{grid-column:1/-1;flex-wrap:nowrap;
+    justify-content:space-between;align-items:center}
+  .bordi-stor .hetja-takkar .takki{flex:1;min-height:40px}}
+
+/* síðan undir þétta borðanum */
+.blad.thett{padding:24px var(--bil-5) 32px;gap:var(--bil-5)}
+.bordi+.blad.thett{padding-top:24px}
+@media (max-width:640px){.blad.thett{padding:14px var(--bil-4) 24px;gap:14px}}
+
+/* ==== Í DAG (lota 17, 2. umferð Evu) ===================================
+   Þarfnast þín um 2/3 vinstra megin; Póstur og Frestir og þinghöld staflað
+   hægra megin; sama 24 px bil, sama innra bil og sömu fyrirsagnir alls
+   staðar. */
+/* jafnhá: grid teygir báða dálka í sömu hæð; spjöldin fylla sinn dálk og
+   tengillinn á heildina situr neðst (Eva valdi A, jafnað) */
+.dalkar3{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);
+  gap:var(--bil-5);align-items:stretch}
+.dalkar3>#tharfnast{height:100%}
+.dalk-stafli{display:flex;flex-direction:column;gap:var(--bil-5);min-width:0}
+.dalk-stafli>.dalkur{flex:1 1 auto}
+.dalkar3>#tharfnast>.dalk-listi{flex:1 1 auto}
+@media (max-width:900px){.dalkar3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.dalkar3,.dalk-stafli{gap:var(--bil-4)}}
+.spjald.dalkur{padding:20px 22px 16px;gap:var(--bil-2)}
+.dalkur>.kaflahaus{margin-bottom:var(--bil-1);padding-bottom:var(--bil-2);
+  border-bottom:1px solid var(--jadar-mjukur)}
+/* breiði dálkurinn: hvert atriði ein röð — merki | efni | aðgerð | hak */
+#tharfnast.dalkur .atridi{grid-template-columns:auto minmax(0,1fr) auto auto;
+  grid-template-areas:"merki efni adgerd hak";gap:4px var(--bil-4);
+  padding:14px 0;align-items:start}
+#tharfnast.dalkur .atridi:not(:has(.merki)){grid-template-columns:minmax(0,1fr) auto auto;
+  grid-template-areas:"efni adgerd hak"}
+#tharfnast.dalkur .atridi>.merki{margin-top:2px;min-width:84px;justify-content:center}
+#tharfnast.dalkur .atridi>.takki{margin:-6px 0 0;align-self:start}
+#tharfnast.dalkur .atridi>.hak{margin:-8px -4px 0 0;align-self:start}
+#tharfnast.dalkur .atridi-titill{font-size:var(--st-3)}
+/* staflaði dálkurinn: merki og aðgerðir í efstu línu, efnið undir — ein lína
+   styttra á hvert atriði svo hann haldist í hendur við breiða dálkinn */
+.dalk-stafli .dalkur .atridi{grid-template-columns:auto minmax(0,1fr) auto auto;
+  grid-template-areas:"merki . adgerd hak" "efni efni efni efni";gap:0 var(--bil-2);
+  padding:8px 0 6px}
+/* þéttar línur: titill mest 2 línur, ein meta-lína */
+.dalk-stafli .atridi-titill{display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;font-size:14.5px}
+/* meta-línan er ekki skorin: málsnúmerið stendur aftast í heitinu og má
+   aldrei hverfa (nafn alltaf með málsnúmeri) */
+.li-efni.einlina .smatt{display:inline}
+.dalkar4 .logsaga-texti{display:-webkit-box;-webkit-line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden}
+.dalk-stafli .dalkur .atridi>.takki{margin:0;min-height:36px;justify-self:end}
+.dalk-stafli .dalkur .atridi>.hak{margin:-4px -4px 0 0}
+@media (max-width:640px){
+  #tharfnast.dalkur .atridi{grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:"merki merki" "efni efni" "adgerd hak";padding:10px 0 0}
+  #tharfnast.dalkur .atridi>.merki{min-width:0}
+  #tharfnast.dalkur .atridi>.takki{margin:0 0 0 calc(-1*var(--bil-2))}
+  #tharfnast.dalkur .atridi>.hak{margin:-2px -4px 0 0}
+  .spjald.dalkur{padding:16px 16px 12px}}
+.dalkur>.kaflahaus{margin-bottom:2px}
+.dalk-listi{display:flex;flex-direction:column}
+.dalkur .atridi{display:grid;grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"merki merki" "efni efni" "adgerd hak";gap:2px var(--bil-2);
+  padding:10px 0 0;border-top:1px solid var(--jadar-mjukur);border-bottom:0;
+  align-items:center}
+.dalkur .atridi:first-child{border-top:0}
+.dalkur .atridi>.merki{grid-area:merki;margin:0;justify-self:start}
+.dalkur .atridi>.atridi-efni{grid-area:efni;gap:2px}
+.dalkur .atridi>.takki,.dalkur .atridi>.skref{grid-area:adgerd;justify-self:start;
+  align-self:center;margin:0 0 0 calc(-1*var(--bil-2));min-height:40px}
+.dalkur .atridi>.hak{grid-area:hak;align-self:center;margin:-2px -4px 0 0}
+.dalkur .atridi:not(:has(.merki)){grid-template-areas:"efni efni" "adgerd hak"}
+.dalkur .atridi-titill{font-size:var(--st-2);line-height:1.35}
+.dalkur .atridi-undir{font-size:var(--st-1)}
+.dalkur .rolegt-bord{padding:var(--bil-3) 0;font-size:var(--st-2)}
+.dalkur .til-synar{margin-top:var(--bil-2)}
+/* ósk Evu: fjögur jafnbreið spjöld, sama hæð í röðinni; tengillinn á
+   heildina alltaf neðst á sama stað */
+.dalkar4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--bil-5);
+  align-items:stretch}
+.dalkar4>.dalkur{height:100%}
+.dalkar4>.dalkur>.til-synar,.dalk-stafli>.dalkur>.til-synar{margin-top:auto}
+@media (max-width:1100px){.dalkar4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.dalkar4{grid-template-columns:minmax(0,1fr);gap:var(--bil-4)}}
+.dalkur ul.listi li{grid-template-columns:minmax(0,1fr) auto;align-items:center}
+.dalkur ul.listi li .smatt{display:block}
+.dalkur ul.listi li>.takki.texti{margin:0;grid-column:auto;justify-self:end;
+  align-self:center;min-height:40px}
+.dalkur .timalina{margin:var(--bil-2) 0 var(--bil-1)}
+.dalkur .logsaga{line-height:1.45}
+details.dalk-meira{border-top:1px solid var(--jadar-mjukur);margin-top:var(--bil-1)}
+details.dalk-meira>summary{min-height:40px;font-size:var(--st-1);color:var(--hreimur)}
+details.dalk-meira>summary::before{border-color:var(--hreimur)}
+.vika-stutt{padding:20px 22px 16px}
+/* Næstu 14 dagar (3. umferð Evu): dagatalsræma 2 × 7 með lituðum punktum */
+.dagaraema{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;
+  margin:var(--bil-2) 0 var(--bil-1)}
+.dr-dagur{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:0;
+  padding:5px 1px 6px;border-radius:8px;background:var(--kort);
+  border:1px solid var(--jadar-mjukur);min-height:58px}
+.dr-dagur.helgi{background:transparent}
+.dr-dagur.brynt{border-color:var(--brynt)}
+.dr-dagur.idag{border-color:var(--hreimur);box-shadow:inset 0 2px 0 var(--hreimur)}
+.dr-vd{font-size:11px;line-height:1.2;color:var(--blek-3)}
+.dr-dagur b{font-size:var(--st-2);line-height:1.2;color:var(--blek)}
+.dr-dagur.idag .dr-vd,.dr-dagur.idag b{color:var(--hreimur)}
+.dr-punktar{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;min-height:7px}
+.dr-p{display:block;width:7px;height:7px;border-radius:50%}
+.dr-p.frestur{background:var(--brynt)}
+.dr-p.thinghald{background:var(--hreimur)}
+.dr-p.utan{background:transparent;border:1.5px solid var(--brynt)}
+.dr-skyring{display:flex;flex-wrap:wrap;gap:var(--bil-1) var(--bil-3);
+  font-size:12px;color:var(--blek-3)}
+.dr-skyring span{position:relative;padding-left:11px}
+.dr-skyring span::before{content:"";position:absolute;left:0;top:.45em;width:7px;
+  height:7px;border-radius:50%;background:var(--brynt)}
+.dr-skyring .thinghald::before{background:var(--hreimur)}
+.dr-skyring .utan::before{background:transparent;border:1.5px solid var(--brynt);
+  box-sizing:border-box}
+.dalkur ul.dr-naest li{font-size:var(--st-1);padding:6px 0}
+.dr-naest .li-efni b{font-weight:600}
+.dr-lina.utan .li-efni b{color:var(--brynt)}
+.vika-stutt>.kaflahaus{padding-bottom:var(--bil-2);border-bottom:1px solid var(--jadar-mjukur)}
+.vika-stutt .vika-skyring{margin-top:var(--bil-1)}
+.til-synar{display:inline-flex;align-items:center;min-height:var(--snerta);
+  font-weight:600;color:var(--hreimur);text-decoration:none}
+.til-synar:hover{text-decoration:underline}
+.undirkafli{display:flex;flex-direction:column;gap:var(--bil-2);margin-top:var(--bil-3)}
+details.samanbrot>summary{min-height:48px}
+details.samanbrot>.inni{padding-top:var(--bil-2)}
+
+/* ==== PÓSTHÓLF — listi + lesrúða (lota 17) ============================== */
+.syn-haus{display:flex;flex-wrap:wrap;gap:var(--bil-2) var(--bil-4);
+  align-items:center;justify-content:space-between}
+.syn-haus h1{margin:0;font:700 26px/1.2 var(--let-fyrirs);max-width:none}
+.flytileidir{display:flex;flex-wrap:wrap;gap:var(--bil-2) var(--bil-4);align-items:center}
+.post-rist{display:grid;grid-template-columns:minmax(0,760px) minmax(0,420px);
+  gap:20px;align-items:start;justify-content:space-between}
+.post-dalkur{display:flex;flex-direction:column;gap:var(--bil-3);min-width:0}
+.post-listi{display:flex;flex-direction:column;gap:var(--bil-3);min-width:0}
+.siustika{position:sticky;top:0;z-index:5;background:var(--grunnur);
+  padding:2px 0 var(--bil-2);display:flex;flex-wrap:wrap;gap:var(--bil-2);
+  align-items:center;min-height:var(--snerta)}
+.siustika .mal-sia{margin-left:auto;min-height:36px;width:220px;max-width:100%;
+  border:1px solid var(--jadar);background:var(--flotur);color:var(--blek);
+  border-radius:10px;padding:0 10px;font:inherit;font-size:var(--st-1)}
+.postlinur{display:flex;flex-direction:column;gap:var(--bil-3)}
+.postlina{display:grid;grid-template-columns:4px minmax(0,1fr) auto auto;
+  gap:4px var(--bil-3);align-items:center;padding:10px 6px 10px 0;
+  background:var(--flotur);border:1px solid var(--jadar-mjukur);border-radius:14px;
+  box-shadow:var(--skuggi);cursor:pointer;overflow:hidden;min-height:72px}
+.postlina.sia-falid,.postlina[hidden],.thradur[hidden]{display:none}
+.postlina .rond,.thradur-haus .rond{align-self:stretch;margin:-10px 0;
+  background:var(--hreimur)}
+.postlina.an .rond{background:var(--rolegt)}
+.postlina:hover{border-color:var(--jadar)}
+.postlina.valin{background:var(--valin);border-color:var(--hreimur)}
+.postlina .l1,.thradur-haus .l1{font-size:var(--st-2);font-weight:600;line-height:1.3;
+  padding-left:var(--bil-2)}
+.postlina .l2,.thradur-haus .l2{font-size:13.5px;color:var(--blek-2);padding-left:var(--bil-2);
+  line-height:1.4}
+.postlina .l2 .s{color:var(--blek-3)}
+.postlina .post-efni{min-width:0}
+.postlina .post-ald{white-space:nowrap;font-size:var(--st-1)}
+.postlina .post-adgerdir{display:flex;align-items:center;gap:2px}
+.postlina .takki.texti{margin:0}
+.js .postlina .lesefni{display:none}
+.postlina .lesefni{grid-column:2/-1;padding:var(--bil-2);border-top:1px dashed var(--jadar)}
+.thradur{background:var(--flotur);border:1px solid var(--jadar-mjukur);border-radius:14px;
+  box-shadow:var(--skuggi);overflow:hidden}
+.thradur-haus{display:grid;grid-template-columns:4px minmax(0,1fr);gap:4px var(--bil-3);
+  align-items:center;padding:10px var(--bil-3) 10px 0;background:var(--kort);
+  border-bottom:1px solid var(--jadar-mjukur)}
+.thradur .postlina{border:0;border-radius:0;box-shadow:none;
+  border-top:1px solid var(--jadar-mjukur);min-height:64px}
+.thradur .postlina:first-of-type{border-top:0}
+.thradur .postlina .l1{font-weight:500;font-size:14px}
+.lesrud{position:sticky;top:8px;max-height:calc(100vh - 96px);overflow:auto;
+  padding:var(--bil-4) 18px 14px;gap:10px}
+.lesrud .loka-lesrud{display:none;align-self:flex-end}
+.lesrud-inni{display:flex;flex-direction:column;gap:10px}
+.lr-mal{font:700 16px/1.3 var(--let-fyrirs)}
+.lr-sendandi,.lr-efni{font-size:var(--st-1);color:var(--blek-2)}
+.lr-efni b{color:var(--blek)}
+.tilh{display:flex;gap:var(--bil-2);align-items:center;flex-wrap:wrap}
+.tillaga-texti{font:400 14.5px/1.55 var(--let-fyrirs);white-space:pre-line}
+.tillaga-texti p{margin:0 0 .6em;max-width:none}
+.lr-adg{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  border-top:1px solid var(--jadar-mjukur);padding-top:10px}
+.lr-adg .hak{margin-left:auto}
+.lyklar{font-size:12px;color:var(--blek-3);display:flex;gap:10px;flex-wrap:wrap}
+.lyklar kbd{font:600 11px var(--let-texti);border:1px solid var(--jadar);
+  border-bottom-width:2px;border-radius:5px;padding:1px 5px;background:var(--flotur);
+  color:var(--blek-2)}
+.klemma{display:inline-flex;align-items:center;gap:.2em;margin-left:var(--bil-2)}
+.klemma svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.postlisti .listi li{grid-template-columns:minmax(0,1fr) auto auto;align-items:center}
+.postlisti .li-efni .smatt{display:block}
+.postlisti .lidinn{color:var(--brynt);font-weight:600}
+.semur{opacity:.7;pointer-events:none;cursor:progress}
+.semja-ath{flex-basis:100%;font-size:var(--st-1);color:var(--blek-3)}
+@media (max-width:900px){
+  .post-rist{grid-template-columns:minmax(0,1fr)}
+  .lesrud{display:none;position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;
+    max-height:78vh;border-radius:20px 20px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.35);
+    padding-bottom:calc(var(--bil-4) + env(safe-area-inset-bottom))}
+  .lesrud.opin{display:flex}
+  .lesrud .loka-lesrud{display:inline-flex}
+  .lyklar{display:none}}
+@media (max-width:640px){
+  .postlina{grid-template-columns:4px minmax(0,1fr) auto;padding-right:var(--bil-2)}
+  .postlina .post-adgerdir{grid-column:2/-1;justify-content:space-between}
+  .siustika{position:static;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .siustika .pillur{flex-wrap:nowrap}
+  .siustika .mal-sia,.siustika .mal-sia.adeins-js{display:none}
+  .postlisti .listi li{grid-template-columns:minmax(0,1fr) auto}
+  .postlisti .listi li>.takki{grid-column:1;justify-self:start}}
+
+/* ==== FRESTIR — raðir með föstum aðgerðadálki (lota 17) ================= */
+.frestasiur{flex-wrap:wrap;gap:var(--bil-2) var(--bil-5);align-items:center}
+.frestasiur .synauppfyllt{margin-left:auto}
+.sia-virk{margin:0}
+.frestalisti{display:flex;flex-direction:column;gap:var(--bil-2)}
+.vikuhopur{display:flex;flex-direction:column;gap:var(--bil-2)}
+.vikuhopur[hidden]{display:none}
+.vikuhaus{display:flex;align-items:baseline;flex-wrap:wrap;gap:var(--bil-2) 10px;
+  margin:6px 0 2px;font:600 var(--st-0)/1.4 var(--let-texti);letter-spacing:.08em;
+  text-transform:uppercase;color:var(--blek-3)}
+.vikuhaus.lidid{color:var(--brynt)}
+.vikuhaus .vk-bil{font-weight:400;letter-spacing:0;text-transform:none}
+.vikuhaus .merki{letter-spacing:.04em}
+.frestarod{display:grid;grid-template-columns:88px minmax(0,1fr) 330px;
+  gap:4px var(--bil-4);align-items:center;background:var(--flotur);
+  border:1px solid var(--jadar);border-radius:var(--rund-m);
+  padding:10px var(--bil-3) 10px var(--bil-2);min-height:76px}
+.frestarod.sia-falid,.frestarod[hidden]{display:none}
+.frestarod .dagar-eftir{text-align:center;line-height:1.05}
+.frestarod .dagar-eftir b{display:block;font:700 28px/1.05 var(--let-fyrirs)}
+.frestarod .dagar-eftir b.kl{font-size:22px}
+.frestarod .dagar-eftir span{font-size:11px;color:var(--blek-3)}
+.frestarod .dagar-eftir.brynt b{color:var(--brynt)}
+.frestarod .dagar-eftir.vidvorun b{color:var(--vidvorun)}
+.fr-efni{min-width:0}
+.fr-l1{display:flex;gap:var(--bil-2);align-items:flex-start}
+.fr-l1 .merki{margin-top:2px}
+.frestarod .fr-titill{font-size:var(--st-2);font-weight:600;line-height:1.35}
+.frestarod .fr-undir{font-size:var(--st-1);color:var(--blek-2);margin-top:2px;
+  display:flex;flex-wrap:wrap;gap:0 .8em}
+.fr-merki{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;align-items:center}
+.stadf{margin:4px 0 0;font-size:12.5px;color:var(--hreimur);font-weight:600;max-width:none}
+.bordi .stadf{color:var(--hetja-blek)}
+.fr-adgerdir{display:grid;grid-template-columns:112px 150px 56px;gap:4px;
+  align-items:center;justify-items:center}
+.fr-adgerdir>.takki.adal,.fr-adgerdir>.takki.utlina{width:112px;min-width:0;padding:0 8px}
+.fr-adgerdir>.takki.texti{width:150px;margin:0;justify-content:center}
+.fr-adgerdir>.takki.utlina+.takki.adal{width:150px}
+@media (max-width:640px){
+  .frestarod{grid-template-columns:56px minmax(0,1fr);padding:var(--bil-3) var(--bil-3)
+    var(--bil-2);gap:6px 10px;align-items:start}
+  .frestarod .dagar-eftir b{font-size:26px}
+  .fr-l1{flex-direction:column;gap:2px}
+  .fr-adgerdir{grid-column:1/-1;display:flex;align-items:center;gap:2px}
+  .fr-adgerdir>.takki.adal,.fr-adgerdir>.takki.utlina{flex:1;width:auto}
+  .fr-adgerdir>.takki.texti{width:auto;flex:0 0 auto;padding:0 6px}
+  .fr-adgerdir>.tomur{display:none}
+  .fr-adgerdir>.hak{margin-left:auto}
+  .frestasiur{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  .frestasiur .pillur{flex-wrap:nowrap}
+  .vikuhaus{position:sticky;top:0;background:var(--grunnur);z-index:4;padding:6px 0;margin:0}
+  .bordi-flisar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    margin:0 calc(-1*var(--bil-4));padding:0 var(--bil-4)}
+  .bordi-flis{flex:0 0 auto}}

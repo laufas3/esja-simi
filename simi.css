@@ -1,0 +1,45 @@
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--grunnur);color:var(--blek);-webkit-text-size-adjust:100%}
+.s-stika a{min-width:0}
+.s-haus{background:var(--hreimur-djup);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 16px 12px}
+.s-haus h1{font-size:19px;margin:0;font-weight:700}
+.s-haus p{margin:4px 0 0;font-size:14px;opacity:.85}
+.s-megin{padding:16px 16px calc(100px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
+.s-syn{display:none}.s-syn.virk{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+.s-dalkur{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.s-kafli{background:var(--flotur);border:1px solid var(--jadar);border-radius:12px;padding:14px 16px;min-width:0}
+.s-kafli h2{font-size:13px;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px;color:var(--blek-2)}
+.s-lina{border-left:3px solid var(--rolegt);padding:6px 0 6px 10px;margin:8px 0}
+.s-lina.brynt{border-left-color:var(--brynt)}.s-lina.vidv{border-left-color:var(--vidvorun)}
+.s-lina.hreimur{border-left-color:var(--hreimur)}
+.s-titill{font-weight:600;font-size:16px}
+.s-undir{font-size:14px;color:var(--blek-2);margin-top:2px}
+.s-meta{font-size:13px;color:var(--blek-3);margin-top:2px}
+.s-tomt{color:var(--blek-3);margin:4px 0}
+.s-villa{color:var(--brynt);font-size:14px}
+.s-takki{font:inherit;font-size:16px;min-height:44px;border-radius:10px;padding:10px 16px;cursor:pointer;
+  border:1px solid var(--jadar);background:var(--takki);color:var(--takki-blek)}
+.s-takki.adal{background:var(--hreimur);border-color:var(--hreimur);color:#fff}
+.s-takki.haetta{background:var(--brynt);border-color:var(--brynt);color:#fff}
+.s-takkar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.s-inn{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:11px 12px;border-radius:10px;
+  border:1px solid var(--jadar);background:var(--flotur);color:var(--blek)}
+textarea.s-inn{min-height:140px;resize:vertical}
+.s-spjald{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--flotur);
+  border:1px solid var(--jadar);border-radius:12px;padding:12px 14px;cursor:pointer;box-sizing:border-box}
+.s-texti{white-space:pre-wrap;font-size:16px;line-height:1.45;margin:8px 0;overflow-wrap:anywhere}
+.s-merki{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--akvordun-tonn);color:var(--blek-2)}
+.s-merki.brynt{background:var(--brynt-tonn);color:var(--brynt)}
+.s-merki.bidur{background:var(--vidvorun-tonn);color:var(--vidvorun)}
+details summary{cursor:pointer;color:var(--blek-2);font-size:14px;padding:6px 0}
+.s-stika{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--grunnur);
+  border-top:1px solid var(--jadar);padding-bottom:env(safe-area-inset-bottom);z-index:9}
+.s-stika a{flex:1;text-align:center;padding:12px 0 14px;font-size:15px;color:var(--blek-2);text-decoration:none;border-top:2px solid transparent}
+.s-stika a.virkt{color:var(--hreimur);border-top-color:var(--hreimur);font-weight:600}
+.s-tala{font-size:12px;margin-left:3px;color:var(--blek-3)}
+.s-fab{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom));width:64px;height:64px;border-radius:50%;
+  border:0;background:var(--hreimur);color:#fff;font:inherit;font-size:13px;font-weight:600;z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.s-fab b{display:block;width:14px;height:14px;border-radius:50%;background:#FFB8C4;margin:0 auto 4px}
+.s-ferskt{font-size:13px;color:var(--blek-3)}
+.s-ferskt.gamalt{color:var(--vidvorun);font-weight:600}
+*{transition:none!important;animation:none!important}
