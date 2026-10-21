@@ -16,7 +16,7 @@ async function raesaMsal() {
   if (!ST.clientId || !ST.tenantId) { $('#inn-villa').textContent = 'Uppsetningu vantar (app-skráning í Entra).'; return false; }
   MSAL = new msal.PublicClientApplication({
     auth: { clientId: ST.clientId, authority: 'https://login.microsoftonline.com/' + ST.tenantId,
-            redirectUri: location.origin + location.pathname },
+            redirectUri: location.origin + location.pathname.replace(/index\.html$/, '') },
     cache: { cacheLocation: 'localStorage' } });
   await MSAL.initialize();
   try { const r = await MSAL.handleRedirectPromise(); if (r) REIKN = r.account; }
