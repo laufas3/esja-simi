@@ -2,6 +2,7 @@
 // (Microsoft Graph, innskráning notandans). Ekkert efni er í kóðanum og ekkert er geymt
 // í símanum nema innskráningin og listi yfir eigin beiðnir (auðkenni).
 'use strict';
+const UTGAFA = 5;
 const ST = window.SIMI_STILLINGAR || {};
 let TOLVUR = [];   // fundnar úr stada-<TÖLVA>.json í möppunni
 const SCOPES = ['Files.ReadWrite'];
@@ -16,9 +17,12 @@ const KOMA = { slod: location.href.replace(/(code|id_token|access_token|client_i
                svar: /[#&?](code|error|state)=/.test(location.href) };
 const MSAL_LOG = [];
 function greining() {
-  let ss = []; try { ss = Object.keys(sessionStorage).filter(k => k.startsWith('msal')).map(k => k.split('.').slice(-2).join('.')); } catch (e) {}
-  return 'Svar frá Microsoft: ' + (KOMA.svar ? 'já' : 'nei') + '\nSlóð við komu: ' + KOMA.slod +
+  let ss = [], ls = [];
+  try { ss = Object.keys(sessionStorage).filter(k => k.startsWith('msal')).map(k => k.split('.').slice(-2).join('.')); } catch (e) {}
+  try { ls = Object.keys(localStorage).filter(k => k.startsWith('msal')).map(k => k.split('.').slice(-2).join('.')); } catch (e) {}
+  return 'Útgáfa: ' + UTGAFA + '\nSvar frá Microsoft: ' + (KOMA.svar ? 'já' : 'nei') + '\nSlóð við komu: ' + KOMA.slod +
     '\nReikningar í minni: ' + (MSAL ? MSAL.getAllAccounts().length : '-') + '\nsessionStorage: ' + (ss.join(', ') || 'tómt') +
+    '\nlocalStorage: ' + (ls.slice(0, 8).join(', ') || 'tómt') +
     '\nVafri: ' + (navigator.standalone ? 'heimaskjár' : 'Safari/vafri') + '\n' + MSAL_LOG.slice(-10).join('\n');
 }
 async function raesaMsal() {
@@ -46,6 +50,16 @@ async function raesaMsal() {
   if (REIKN) { try { localStorage.removeItem('esja_innskra_reynt'); } catch (e) {} }
   else if (reynt || KOMA.svar || $('#inn-villa').textContent) { const g = $('#greining'); g.textContent = 'Greining (sendu Claude):\n' + greining(); g.hidden = false; }
   return !!REIKN;
+}
+async function innskraGluggi() {          // varaleið: Microsoft í nýjum glugga, síðan les svarið þaðan
+  if (!MSAL) return;
+  try {
+    const r = await MSAL.loginPopup({ scopes: SCOPES, prompt: 'select_account' });
+    if (r && r.account) { REIKN = r.account; MSAL.setActiveAccount(r.account); location.replace(location.pathname + '#idag'); location.reload(); }
+  } catch (e) {
+    $('#inn-villa').textContent = 'Innskráning í glugga mistókst: ' + (e.errorCode || '') + ' ' + e.message;
+    const g = $('#greining'); g.textContent = 'Greining (sendu Claude):\n' + greining(); g.hidden = false;
+  }
 }
 async function innskra() {
   if (!MSAL) return;
