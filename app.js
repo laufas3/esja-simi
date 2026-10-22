@@ -11,6 +11,16 @@ const bida = ms => new Promise(r => setTimeout(r, ms));
 
 // ---------------------------------------------------------------- innskráning og Graph
 let MSAL = null, REIKN = null;
+// Greining innskráningar: hvort svar Microsoft barst, og síðustu skilaboð MSAL (án persónugagna).
+const KOMA = { slod: location.href.replace(/(code|id_token|access_token|client_info|session_state)=[^&#]*/g, '$1=…'),
+               svar: /[#&?](code|error|state)=/.test(location.href) };
+const MSAL_LOG = [];
+function greining() {
+  let ss = []; try { ss = Object.keys(sessionStorage).filter(k => k.startsWith('msal')).map(k => k.split('.').slice(-2).join('.')); } catch (e) {}
+  return 'Svar frá Microsoft: ' + (KOMA.svar ? 'já' : 'nei') + '\nSlóð við komu: ' + KOMA.slod +
+    '\nReikningar í minni: ' + (MSAL ? MSAL.getAllAccounts().length : '-') + '\nsessionStorage: ' + (ss.join(', ') || 'tómt') +
+    '\nVafri: ' + (navigator.standalone ? 'heimaskjár' : 'Safari/vafri') + '\n' + MSAL_LOG.slice(-10).join('\n');
+}
 async function raesaMsal() {
   if (ST.profun) return true;
   if (!ST.clientId || !ST.tenantId) { $('#inn-villa').textContent = 'Uppsetningu vantar (app-skráning í Entra).'; return false; }
@@ -19,19 +29,25 @@ async function raesaMsal() {
             redirectUri: location.origin + location.pathname.replace(/index\.html$/, ''),
             // Síðan notar #-leiðsögn; MSAL má ekki fletta aftur á upphafsslóðina eftir endurkomu.
             navigateToLoginRequestUrl: false },
-    cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true } });
+    cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true },
+    system: { loggerOptions: { piiLoggingEnabled: false, logLevel: msal.LogLevel.Info,
+      loggerCallback: (lvl, m, pii) => { if (!pii) MSAL_LOG.push(m.replace(/^\[[^\]]*\]\s*:\s*/, '').slice(0, 220)); } } } });
   await MSAL.initialize();
   try {
     const r = await MSAL.handleRedirectPromise();
     if (r && r.account) { REIKN = r.account; MSAL.setActiveAccount(r.account); history.replaceState(null, '', location.pathname + '#idag'); }
   } catch (e) { $('#inn-villa').textContent = 'Innskráning mistókst: ' + (e.errorCode || '') + ' ' + e.message; }
   REIKN = REIKN || MSAL.getActiveAccount() || MSAL.getAllAccounts()[0] || null;
-  if (!REIKN && /[#&?](code|error|state)=/.test(location.href) && !$('#inn-villa').textContent)
-    $('#inn-villa').textContent = 'Svar barst frá Microsoft en innskráningin vistaðist ekki. Opnaðu síðuna í Safari (ekki af heimaskjánum) og reyndu aftur.';
+  if (!REIKN && KOMA.svar && !$('#inn-villa').textContent)
+    $('#inn-villa').textContent = 'Svar barst frá Microsoft en innskráningin vistaðist ekki.';
+  let reynt = false; try { reynt = !!localStorage.getItem('esja_innskra_reynt'); } catch (e) {}
+  if (REIKN) { try { localStorage.removeItem('esja_innskra_reynt'); } catch (e) {} }
+  else if (reynt || KOMA.svar || $('#inn-villa').textContent) { const g = $('#greining'); g.textContent = 'Greining (sendu Claude):\n' + greining(); g.hidden = false; }
   return !!REIKN;
 }
 async function innskra() {
   if (!MSAL) return;
+  try { localStorage.setItem('esja_innskra_reynt', new Date().toISOString()); } catch (e) {}
   try { await MSAL.loginRedirect({ scopes: SCOPES, prompt: 'select_account', redirectStartPage: location.pathname + '#idag' }); }
   catch (e) {
     if (e.errorCode === 'interaction_in_progress') {   // leif eftir fyrri tilraun
