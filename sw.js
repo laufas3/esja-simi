@@ -1,6 +1,6 @@
 // Geymir aðeins viðmótið (kóðann) svo síðan opnist án nets. Engin gögn eru geymd hér:
 // köll á Microsoft Graph og innskráningu fara framhjá.
-const C = 'esja-simi-v1';
+const C = 'esja-simi-v2';
 const SKEL = ['./', 'index.html', 'app.js', 'simi.css', 'stilar.css', 'stillingar.js',
               'msal-browser.min.js', 'manifest.webmanifest', 'takn-180.png'];
 self.addEventListener('install', e => {

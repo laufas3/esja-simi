@@ -16,15 +16,30 @@ async function raesaMsal() {
   if (!ST.clientId || !ST.tenantId) { $('#inn-villa').textContent = 'Uppsetningu vantar (app-skráning í Entra).'; return false; }
   MSAL = new msal.PublicClientApplication({
     auth: { clientId: ST.clientId, authority: 'https://login.microsoftonline.com/' + ST.tenantId,
-            redirectUri: location.origin + location.pathname.replace(/index\.html$/, '') },
-    cache: { cacheLocation: 'localStorage' } });
+            redirectUri: location.origin + location.pathname.replace(/index\.html$/, ''),
+            // Síðan notar #-leiðsögn; MSAL má ekki fletta aftur á upphafsslóðina eftir endurkomu.
+            navigateToLoginRequestUrl: false },
+    cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true } });
   await MSAL.initialize();
-  try { const r = await MSAL.handleRedirectPromise(); if (r) REIKN = r.account; }
-  catch (e) { $('#inn-villa').textContent = 'Innskráning mistókst: ' + e.message; }
-  REIKN = REIKN || MSAL.getAllAccounts()[0] || null;
+  try {
+    const r = await MSAL.handleRedirectPromise();
+    if (r && r.account) { REIKN = r.account; MSAL.setActiveAccount(r.account); history.replaceState(null, '', location.pathname + '#idag'); }
+  } catch (e) { $('#inn-villa').textContent = 'Innskráning mistókst: ' + (e.errorCode || '') + ' ' + e.message; }
+  REIKN = REIKN || MSAL.getActiveAccount() || MSAL.getAllAccounts()[0] || null;
+  if (!REIKN && /[#&?](code|error|state)=/.test(location.href) && !$('#inn-villa').textContent)
+    $('#inn-villa').textContent = 'Svar barst frá Microsoft en innskráningin vistaðist ekki. Opnaðu síðuna í Safari (ekki af heimaskjánum) og reyndu aftur.';
   return !!REIKN;
 }
-function innskra() { MSAL && MSAL.loginRedirect({ scopes: SCOPES, prompt: 'select_account' }); }
+async function innskra() {
+  if (!MSAL) return;
+  try { await MSAL.loginRedirect({ scopes: SCOPES, prompt: 'select_account', redirectStartPage: location.pathname + '#idag' }); }
+  catch (e) {
+    if (e.errorCode === 'interaction_in_progress') {   // leif eftir fyrri tilraun
+      try { Object.keys(sessionStorage).filter(k => k.includes('interaction.status')).forEach(k => sessionStorage.removeItem(k)); } catch (x) {}
+      $('#inn-villa').textContent = 'Fyrri innskráning hékk. Ýttu aftur á Skrá inn.';
+    } else $('#inn-villa').textContent = 'Innskráning hófst ekki: ' + (e.errorCode || '') + ' ' + e.message;
+  }
+}
 async function tokn() {
   if (ST.profun) return 'profun';
   try { return (await MSAL.acquireTokenSilent({ scopes: SCOPES, account: REIKN })).accessToken; }
