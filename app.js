@@ -29,7 +29,9 @@ async function raesaMsal() {
             redirectUri: location.origin + location.pathname.replace(/index\.html$/, ''),
             // Síðan notar #-leiðsögn; MSAL má ekki fletta aftur á upphafsslóðina eftir endurkomu.
             navigateToLoginRequestUrl: false },
-    cache: { cacheLocation: 'localStorage', storeAuthStateInCookie: true },
+    // temporaryCacheLocation: iPhone opnar endurkomuna frá Microsoft stundum í nýjum flipa (t.d. um
+    // Authenticator), og þá er sessionStorage tómt; localStorage lifir það af (greining 22.10.2026).
+    cache: { cacheLocation: 'localStorage', temporaryCacheLocation: 'localStorage', storeAuthStateInCookie: true },
     system: { loggerOptions: { piiLoggingEnabled: false, logLevel: msal.LogLevel.Info,
       loggerCallback: (lvl, m, pii) => { if (!pii) MSAL_LOG.push(m.replace(/^\[[^\]]*\]\s*:\s*/, '').slice(0, 220)); } } } });
   await MSAL.initialize();
@@ -51,7 +53,7 @@ async function innskra() {
   try { await MSAL.loginRedirect({ scopes: SCOPES, prompt: 'select_account', redirectStartPage: location.pathname + '#idag' }); }
   catch (e) {
     if (e.errorCode === 'interaction_in_progress') {   // leif eftir fyrri tilraun
-      try { Object.keys(sessionStorage).filter(k => k.includes('interaction.status')).forEach(k => sessionStorage.removeItem(k)); } catch (x) {}
+      try { [sessionStorage, localStorage].forEach(s => Object.keys(s).filter(k => k.includes('interaction.status')).forEach(k => s.removeItem(k))); } catch (x) {}
       $('#inn-villa').textContent = 'Fyrri innskráning hékk. Ýttu aftur á Skrá inn.';
     } else $('#inn-villa').textContent = 'Innskráning hófst ekki: ' + (e.errorCode || '') + ' ' + e.message;
   }
