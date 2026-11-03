@@ -43,3 +43,11 @@ details summary{cursor:pointer;color:var(--blek-2);font-size:14px;padding:6px 0}
 .s-ferskt{font-size:13px;color:var(--blek-3)}
 .s-ferskt.gamalt{color:var(--vidvorun);font-weight:600}
 *{transition:none!important;animation:none!important}
+/* verkefnalistinn (G252) */
+.s-verk-kafli{font-size:var(--st-1);color:var(--blek-3);text-transform:uppercase;letter-spacing:.04em;margin:18px 2px 6px}
+.s-verk.seint{box-shadow:inset 3px 0 0 var(--brynt)}
+.s-svar{border-left:2px solid var(--jadar);padding:4px 0 4px 10px;margin:8px 0}
+.s-svar .s-undir{white-space:pre-wrap;overflow-wrap:anywhere}
+.s-merki.lokid{background:var(--akvordun-tonn);color:var(--hreimur)}
+.s-verk-svar summary{cursor:pointer;color:var(--hreimur);font-size:var(--st-2);padding:8px 0;min-height:var(--snerta)}
+.s-verk-svar textarea{width:100%;min-height:90px}

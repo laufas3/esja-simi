@@ -2,7 +2,7 @@
 // (Microsoft Graph, innskráning notandans). Ekkert efni er í kóðanum og ekkert er geymt
 // í símanum nema innskráningin og listi yfir eigin beiðnir (auðkenni).
 'use strict';
-const UTGAFA = 5;
+const UTGAFA = 6;
 const ST = window.SIMI_STILLINGAR || {};
 let TOLVUR = [];   // fundnar úr stada-<TÖLVA>.json í möppunni
 const SCOPES = ['Files.ReadWrite'];
@@ -114,7 +114,7 @@ async function listi(p) {
 }
 
 // ---------------------------------------------------------------- staðan
-let STADA = null, ALLAR = {}, BEIDNIR = {};
+let STADA = null, ALLAR = {}, BEIDNIR = {}, DROG = [], VERK = null, VERK_TOLVA = '';
 const iDag = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const aMorgun = () => { const d = new Date(Date.now() + 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const klukka = iso => iso ? iso.slice(11, 16) : '';
@@ -128,6 +128,13 @@ async function saekjaStodu() {
   STADA = radad[0] || null;
   BEIDNIR = {};
   radad.slice().reverse().forEach(a => Object.assign(BEIDNIR, a.beidnir || {}));
+  // Drög og verkefnalisti koma úr þeirri stöðu sem hefur nýjustu útgáfu þeirra (G252):
+  // tölva sem snerti ekki Outlook í umferðinni ber eldri drög en nýjasta stöðu.
+  const nyjast = (k, kl) => radad.filter(a => a[k]).sort((a, b) => (kl(b) || '').localeCompare(kl(a) || ''))[0];
+  const d = nyjast('drog', a => a.drog_kl || a.kl);
+  DROG = d ? d.drog : [];
+  const v = nyjast('verkefni', a => a.verkefni.kl);
+  VERK = v ? v.verkefni : null; VERK_TOLVA = v ? v.tolva : '';
   return STADA;
 }
 function ferskleiki() {
@@ -139,14 +146,14 @@ function ferskleiki() {
 }
 
 // ---------------------------------------------------------------- sýnir
-const SYNIR = ['idag', 'postur', 'athuga', 'minni'];
+const SYNIR = ['idag', 'verkefni', 'postur', 'athuga', 'minni'];
 function syna() {
   const h = (location.hash || '#idag').slice(1).split('/')[0];
   const s = SYNIR.includes(h) ? h : 'idag';
   document.querySelectorAll('.s-syn').forEach(x => x.classList.toggle('virk', x.id === 'syn-' + s));
   document.querySelectorAll('.s-stika a').forEach(a => a.classList.toggle('virkt', a.dataset.s === s));
   $('#fab').hidden = s === 'minni';
-  ({ idag: synaDag, postur: synaPost, athuga: synaAthuga, minni: synaMinni })[s]();
+  ({ idag: synaDag, verkefni: synaVerk, postur: synaPost, athuga: synaAthuga, minni: synaMinni })[s]();
 }
 window.addEventListener('hashchange', syna);
 
@@ -198,12 +205,12 @@ let DRAG = null;
 async function synaPost(nytt) {
   const h = location.hash.split('/');
   if (nytt || !STADA) { $('#postur').innerHTML = '<p class="s-tomt">Les …</p>'; try { await saekjaStodu(); } catch (e) { $('#postur').innerHTML = `<p class="s-villa">${esc(e.message)}</p>`; return; } }
-  const drog = (STADA && STADA.drog) || [];
+  const drog = DROG || [];
   $('#t-postur').textContent = drog.length || '';
   const sendar = minarBeidnir().filter(b => b.tegund === 'senda');
   if (h[1]) { DRAG = drog.find(d => d.id === decodeURIComponent(h[1])); return teiknaDrag(); }
   $('#postur').innerHTML = ferskleiki() + `<section class="s-kafli"><h2>Tillögur Claude · ${drog.length}</h2>
-    ${drog.length ? drog.map((x, i) => `<button class="s-spjald" onclick="location.hash='#postur/'+encodeURIComponent(STADA.drog[${i}].id)">
+    ${drog.length ? drog.map((x, i) => `<button class="s-spjald" onclick="location.hash='#postur/'+encodeURIComponent(DROG[${i}].id)">
       <div class="s-titill">${esc(x.sendandi || x.efni)}</div><div class="s-undir">${esc(x.efni)}</div>
       <div class="s-meta">${esc(x.tegund)}${x.aldur != null ? ' · ' + x.aldur + ' d.' : ''}${x.mal ? ' · ' + esc(x.mal) : ''}</div></button>`).join('')
       : '<p class="s-tomt">Engar tillögur bíða. Claude semur tillögur á tölvunni; þær birtast hér.</p>'}</section>
@@ -247,6 +254,108 @@ async function fylgja() {
     teiknaDrag();
     if (send && BEIDNIR[send.id]) return;
   }
+}
+
+// ---------------------------------------------------------------- verkefnalistinn (G252)
+// Listinn kemur úr stöðu tölvunnar (verkefni). Breyting fer í biðröðina og tölvan setur hana
+// á verkefnalistann; þangað til man síminn hana sjálfur (esja_verk) svo verkið hverfi strax.
+let SYNA_LOKID = false;
+function verkBid() { try { return JSON.parse(localStorage.getItem('esja_verk') || '{}'); } catch (e) { return {}; } }
+function geymaVerkBid(o) { try { localStorage.setItem('esja_verk', JSON.stringify(o)); } catch (e) {} }
+const aldurMs = b => Date.now() - new Date(b.kl).getTime();
+function hreinsaVerkBid() {     // það sem tölvan hefur sett á listann gleymist; villur sjást í sólarhring
+  const o = verkBid(), ny = {};
+  Object.entries(o).forEach(([lid, l]) => {
+    const halda = l.filter(b => BEIDNIR[b.id] ? (BEIDNIR[b.id].stada === 'villa' && aldurMs(b) < 864e5) : aldurMs(b) < 2 * 864e5);
+    if (halda.length) ny[lid] = halda;
+  });
+  geymaVerkBid(ny); return ny;
+}
+const bidurTolvu = b => !BEIDNIR[b.id];
+function verkLokid(l, bid) {
+  const b = (bid[l.id] || []).filter(x => bidurTolvu(x) && ['afgreitt', 'opna', 'framkvaemdu'].includes(x.adgerd)).pop();
+  return b ? b.adgerd === 'afgreitt' : l.lokid;
+}
+function svarHTML(v) {
+  const k = { gert: 'lokid', ekki: 'brynt', seint: 'brynt', bidur: 'bidur' }[v.k] || '';
+  return `<div class="s-svar"><div class="s-meta">${esc(v.dags)}${v.framkvaema ? ' · Framkvæmdu' : ''}</div>
+    <div class="s-undir">${esc(v.texti)}</div>
+    ${v.stada ? `<div><span class="s-merki ${k}">${esc(v.stada)}</span></div>` : ''}
+    ${v.skyr ? `<div class="s-meta">${v.k === 'ekki' ? 'Ástæða' : 'Gert'}: ${esc(v.skyr)}</div>` : ''}</div>`;
+}
+function verkHTML(l, bid) {
+  const min = bid[l.id] || [];
+  const lokid = verkLokid(l, bid);
+  const bidur = min.filter(bidurTolvu);
+  const villa = min.filter(b => !bidurTolvu(b) && BEIDNIR[b.id].stada === 'villa');
+  const nySvor = bidur.filter(b => b.adgerd === 'svar' || b.adgerd === 'framkvaemdu')
+    .map(b => svarHTML({ dags: dags(b.kl) + ' kl. ' + klukka(b.kl), texti: b.texti, framkvaema: b.adgerd === 'framkvaemdu', k: 'bidur', stada: 'Í símanum – bíður tölvu' }));
+  const seint = l.svor.some(v => v.k === 'seint');
+  return `<section class="s-kafli s-verk${seint ? ' seint' : ''}" data-lid="${esc(l.id)}">
+    <div class="s-titill">${esc(l.texti)}${l.mal ? ` <span class="s-merki">${esc(l.mal)}</span>` : ''}</div>
+    ${l.svor.map(svarHTML).join('')}${nySvor.join('')}
+    ${villa.map(b => `<p class="s-villa">${esc(BEIDNIR[b.id].skilabod || 'Ekki framkvæmt.')}</p>`).join('')}
+    ${bidur.some(b => b.adgerd === 'afgreitt' || b.adgerd === 'opna') ? '<p class="s-meta"><span class="s-merki bidur">Bíður tölvu</span></p>' : ''}
+    <details class="s-verk-svar"><summary>Svara</summary>
+      <textarea class="s-inn" placeholder="Svar eða fyrirmæli til Claude"></textarea>
+      <div class="s-takkar"><button class="s-takki" onclick="verkSvar(this,'svar')">Senda svar</button>
+        <button class="s-takki adal" onclick="verkSvar(this,'framkvaemdu')">Framkvæmdu</button></div></details>
+    <div class="s-takkar">${lokid
+      ? `<button class="s-takki" onclick="verkMerkja(this,'opna')">Aftur á listann</button>`
+      : `<button class="s-takki adal" onclick="verkMerkja(this,'afgreitt')">✓ Afgreitt</button>`}</div>
+  </section>`;
+}
+async function synaVerk(nytt) {
+  if (nytt || !STADA) { $('#verkefni').innerHTML = '<p class="s-tomt">Les …</p>'; try { await saekjaStodu(); } catch (e) { $('#verkefni').innerHTML = `<p class="s-villa">${esc(e.message)}</p>`; return; } }
+  const bid = hreinsaVerkBid();
+  if (!VERK || !VERK.lidir) { $('#verkefni').innerHTML = ferskleiki() + '<p class="s-tomt">Verkefnalistinn hefur ekki borist frá tölvunum enn.</p>'; return; }
+  const opin = VERK.lidir.filter(l => !verkLokid(l, bid)), lokin = VERK.lidir.filter(l => verkLokid(l, bid));
+  const seintN = opin.reduce((n, l) => n + l.svor.filter(v => v.k === 'seint').length, 0);
+  $('#t-verkefni').textContent = opin.length || '';
+  $('#undirhaus').textContent = opin.length + ' opin verk';
+  const kaflar = [];
+  opin.forEach(l => { let k = kaflar.find(x => x.h === l.kafli); if (!k) kaflar.push(k = { h: l.kafli, l: [] }); k.l.push(l); });
+  const aldur = (Date.now() - new Date(VERK.kl).getTime()) / 6e4;
+  $('#verkefni').innerHTML = `<p class="s-ferskt ${aldur > 30 ? 'gamalt' : ''}">Listi ${esc(dags(VERK.listi))} · frá ${esc(VERK_TOLVA)} ${esc(dags(VERK.kl))} kl. ${esc(klukka(VERK.kl))}${aldur > 30 ? ' — tölvurnar gætu verið slökktar; breytingar bíða' : ''}</p>` +
+    (seintN ? `<p class="s-villa">⚠ ${seintN} ${seintN === 1 ? 'svar bíður' : 'svör bíða'} Claude lengur en 2 klst.</p>` : '') +
+    (kaflar.length ? kaflar.map(k => `<h2 class="s-verk-kafli">${esc(k.h)}</h2>` + k.l.map(l => verkHTML(l, bid)).join('')).join('')
+      : '<p class="s-tomt">Ekkert opið á listanum.</p>') +
+    (lokin.length ? `<div class="s-takkar"><button class="s-takki" onclick="SYNA_LOKID=!SYNA_LOKID;synaVerk()">${SYNA_LOKID ? 'Fela afgreidd' : 'Afgreitt'} (${lokin.length})</button></div>` +
+      (SYNA_LOKID ? '<p class="s-meta">Afgreidd verk. „Aftur á listann“ afturkallar afgreiðslu.</p>' + lokin.map(l => verkHTML(l, bid)).join('') : '') : '') +
+    `<div class="s-takkar"><button class="s-takki" onclick="synaVerk(true)">Uppfæra</button></div>`;
+}
+async function verkBeidni(lid, adgerd, texti) {
+  const b = { tegund: 'verkefni', lid, adgerd, lysing: adgerd + ' ' + lid };
+  if (texti) { b.texti = texti; b.svar_ms = Date.now(); }
+  await setjaIBidrod(b);
+  const o = verkBid(); (o[lid] = o[lid] || []).push({ id: b.id, kl: b.kl, adgerd, texti: texti || '' }); geymaVerkBid(o);
+  synaVerk(); fylgjaVerki();
+}
+async function verkMerkja(el, adgerd) {
+  const lid = el.closest('.s-verk').dataset.lid; el.disabled = true;
+  try { await verkBeidni(lid, adgerd); }
+  catch (e) { el.disabled = false; el.insertAdjacentHTML('afterend', `<p class="s-villa">${esc(e.message)} Ekkert fór í biðröð.</p>`); }
+}
+async function verkSvar(el, adgerd) {
+  const s = el.closest('.s-verk'), ta = s.querySelector('textarea'), t = ta.value.trim();
+  if (!t) { ta.focus(); return; }
+  el.disabled = true;
+  try { await verkBeidni(s.dataset.lid, adgerd, t); }
+  catch (e) { el.disabled = false; el.insertAdjacentHTML('afterend', `<p class="s-villa">${esc(e.message)} Textinn er enn í reitnum.</p>`); }
+}
+let FYLGIR_VERKI = false;
+async function fylgjaVerki() {          // fylgist með þar til tölvan hefur sett breytingarnar á listann
+  if (FYLGIR_VERKI) return; FYLGIR_VERKI = true;
+  try {
+    for (let i = 0; i < 40; i++) {
+      await bida(15000);
+      if (location.hash !== '#verkefni') return;
+      if (document.activeElement && document.activeElement.tagName === 'TEXTAREA') continue;
+      try { await saekjaStodu(); } catch (e) { continue; }
+      synaVerk();
+      if (!Object.values(hreinsaVerkBid()).some(l => l.some(bidurTolvu))) return;
+    }
+  } finally { FYLGIR_VERKI = false; }
 }
 
 // ---------------------------------------------------------------- árekstrar

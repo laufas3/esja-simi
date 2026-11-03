@@ -1,8 +1,8 @@
 // Geymir aðeins viðmótið (kóðann) svo síðan opnist án nets. Engin gögn eru geymd hér:
 // köll á Microsoft Graph og innskráningu fara framhjá.
-const C = 'esja-simi-v5';
-const SKEL = ['./', 'index.html', 'app.js?v=5', 'simi.css?v=5', 'stilar.css?v=5', 'stillingar.js?v=5',
-              'msal-browser.min.js?v=5', 'manifest.webmanifest', 'takn-180.png'];
+const C = 'esja-simi-v6';
+const SKEL = ['./', 'index.html', 'app.js?v=6', 'simi.css?v=6', 'stilar.css?v=6', 'stillingar.js?v=6',
+              'msal-browser.min.js?v=6', 'manifest.webmanifest', 'takn-180.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(C).then(c => c.addAll(SKEL)));
   self.skipWaiting();
