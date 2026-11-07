@@ -7,7 +7,7 @@ body{margin:0;background:var(--grunnur);color:var(--blek);-webkit-text-size-adju
 .s-megin{padding:16px 16px calc(100px + env(safe-area-inset-bottom));max-width:640px;margin:0 auto}
 .s-syn{display:none}.s-syn.virk{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
 .s-dalkur{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
-.s-kafli{background:var(--flotur);border:1px solid var(--jadar);border-radius:12px;padding:14px 16px;min-width:0}
+.s-kafli{background:var(--flotur);border:1.5px solid var(--hreimur);border-left-width:5px;border-radius:6px;padding:10px 12px;min-width:0}
 .s-kafli h2{font-size:13px;letter-spacing:.05em;text-transform:uppercase;margin:0 0 10px;color:var(--blek-2)}
 .s-lina{border-left:3px solid var(--rolegt);padding:6px 0 6px 10px;margin:8px 0}
 .s-lina.brynt{border-left-color:var(--brynt)}.s-lina.vidv{border-left-color:var(--vidvorun)}
@@ -51,3 +51,28 @@ details summary{cursor:pointer;color:var(--blek-2);font-size:14px;padding:6px 0}
 .s-merki.lokid{background:var(--akvordun-tonn);color:var(--hreimur)}
 .s-verk-svar summary{cursor:pointer;color:var(--hreimur);font-size:var(--st-2);padding:8px 0;min-height:var(--snerta)}
 .s-verk-svar textarea{width:100%;min-height:90px}
+/* B2 (Ómar 7.11.2026): fimm reitir sem síur, þétt runa, útlit esl.is */
+.s-dalkur{gap:10px}.s-syn.virk{gap:10px}
+.s-reitir{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.s-reitur{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;background:var(--flotur);
+  border:1.5px solid var(--hreimur);border-top-width:4px;border-radius:6px;padding:8px 10px;min-height:var(--snerta)}
+.s-reitur:last-child{grid-column:1/-1}
+.s-reitur.virk{background:var(--valin)}
+.s-reitur.r{border-top-color:var(--brynt)}.s-reitur.r .n{color:var(--brynt)}
+.s-reitur .n{font:600 28px/1 var(--let-fyrirs);color:var(--hreimur)}
+.s-reitur .t{font-weight:700;font-size:14px;margin-top:2px;color:var(--blek)}
+.s-reitur .u{font-size:12.5px;color:var(--blek-3)}
+.s-reitur:focus-visible{outline:2px solid var(--fokus);outline-offset:2px}
+.s-hopur{margin:10px 0 4px;padding:3px 8px;font:700 12px var(--let-texti);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--blek-2);background:var(--valin);border-left:3px solid var(--hreimur)}
+.s-hopur:first-child{margin-top:0}
+.s-dagur{padding:4px 0;border-bottom:1px solid var(--jadar)}.s-dagur:last-child{border-bottom:0}
+.s-dh{font:600 15px var(--let-fyrirs);color:var(--blek);margin:2px 0}
+.s-dagur .s-lina{margin:4px 0;padding:3px 0 3px 10px}
+.s-tg{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--blek-3)}
+.s-tg.th{color:var(--hreimur)}.s-tg.lb{color:var(--brynt);font-weight:600}
+.s-titill{font-size:15px}
+.s-tilk{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--hreimur-djup);
+  color:#fff;padding:10px 14px;border-radius:8px;font-size:14px;max-width:90vw;z-index:11}
+.s-tilk[hidden]{display:none}
+.s-stika a{font-size:14px}

@@ -2,7 +2,7 @@
 // (Microsoft Graph, innskráning notandans). Ekkert efni er í kóðanum og ekkert er geymt
 // í símanum nema innskráningin og listi yfir eigin beiðnir (auðkenni).
 'use strict';
-const UTGAFA = 6;
+const UTGAFA = 7;
 const ST = window.SIMI_STILLINGAR || {};
 let TOLVUR = [];   // fundnar úr stada-<TÖLVA>.json í möppunni
 const SCOPES = ['Files.ReadWrite'];
@@ -99,8 +99,28 @@ async function lesaTexta(p) {
   const d = (await r.json())['@microsoft.graph.downloadUrl'];
   return d ? (await fetch(d, { cache: 'no-store' })).text() : null;
 }
-async function skrifa(p, efni, teg = 'application/json') {
-  if (efni.size > 4 * 1024 * 1024) throw new Error('Skráin er stærri en 4 MB.');
+const BUTUR = 16 * 327680;   // 5 MiB, margfeldi af 320 KiB eins og Graph krefst
+async function skrifaStort(p, blob, framvinda) {    // upphleðslulota (createUploadSession) fyrir > 4 MB
+  const r = await graph(skraSlod(p) + ':/createUploadSession', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ item: { '@microsoft.graph.conflictBehavior': 'rename' } }) });
+  if (!r.ok) throw new Error('Upphleðsla hófst ekki (' + r.status + ').');
+  const url = (await r.json()).uploadUrl;
+  for (let a = 0; a < blob.size; a += BUTUR) {
+    const b = Math.min(a + BUTUR, blob.size);
+    let s = null;
+    for (let tilraun = 0; tilraun < 3; tilraun++) {
+      try { s = await fetch(url, { method: 'PUT', headers: { 'Content-Range': 'bytes ' + a + '-' + (b - 1) + '/' + blob.size }, body: blob.slice(a, b) }); }
+      catch (e) { s = null; }
+      if (s && (s.ok || s.status === 202)) break;
+      await bida(2000 * (tilraun + 1));
+    }
+    if (!s || !(s.ok || s.status === 202)) throw new Error('Upphleðsla rofnaði við ' + Math.round(a / 1048576) + ' MB.');
+    if (framvinda) framvinda(b / blob.size);
+  }
+  return true;
+}
+async function skrifa(p, efni, teg = 'application/json', framvinda) {
+  if (efni instanceof Blob && efni.size > 4 * 1024 * 1024) return skrifaStort(p, efni, framvinda);
   const r = await graph(skraSlod(p) + ':/content', { method: 'PUT', headers: { 'Content-Type': teg },
     body: typeof efni === 'string' || efni instanceof Blob ? efni : JSON.stringify(efni) });
   if (!r.ok) throw new Error('Vistun í OneDrive mistókst (' + r.status + ').');
@@ -146,42 +166,122 @@ function ferskleiki() {
 }
 
 // ---------------------------------------------------------------- sýnir
-const SYNIR = ['idag', 'verkefni', 'postur', 'athuga', 'minni'];
+const SYNIR = ['idag', 'postur', 'frestir', 'verkefni', 'athuga', 'minni'];
 function syna() {
   const h = (location.hash || '#idag').slice(1).split('/')[0];
   const s = SYNIR.includes(h) ? h : 'idag';
   document.querySelectorAll('.s-syn').forEach(x => x.classList.toggle('virk', x.id === 'syn-' + s));
   document.querySelectorAll('.s-stika a').forEach(a => a.classList.toggle('virkt', a.dataset.s === s));
   $('#fab').hidden = s === 'minni';
-  ({ idag: synaDag, verkefni: synaVerk, postur: synaPost, athuga: synaAthuga, minni: synaMinni })[s]();
+  if (s === 'athuga') document.querySelector('.s-stika a[data-s=idag]').classList.add('virkt');
+  ({ idag: synaDag, verkefni: synaVerk, postur: synaPost, frestir: synaFresti, athuga: synaAthuga, minni: synaMinni })[s]();
 }
 window.addEventListener('hashchange', syna);
 
 function lina(x) {
-  if (x.teg === 'thinghald') return `<div class="s-lina hreimur"><div class="s-titill">${esc(x.timi || '')} ${esc(x.tegund)}</div>
-    <div class="s-undir">${esc(x.domstoll)}${x.salur ? ' · salur ' + esc(x.salur) : ''}${x.lengd ? ' · ' + esc(x.lengd) : ''}</div><div class="s-meta">${esc(x.mal)}</div></div>`;
-  const brynt = x.logbundinn && x.dags <= aMorgun();
-  return `<div class="s-lina ${brynt ? 'brynt' : 'vidv'}"><div class="s-titill">${esc(x.heiti)}</div>
-    <div class="s-undir">${esc(x.flokkur)}${x.dags < iDag() ? ' · ' + esc(dags(x.dags)) : ''}${x.i_dagatali ? '' : ' · <span class="s-merki brynt">ekki í dagatali</span>'}</div>
-    <div class="s-meta">${esc(x.mal)}</div></div>`;
+  if (x.teg === 'thinghald') return `<div class="s-lina hreimur"><div class="s-tg th">${esc(x.timi || '')} ${esc(x.tegund)}</div>
+    <div class="s-titill">${esc(x.mal)}</div><div class="s-meta">${esc(x.domstoll)}${x.salur ? ' · salur ' + esc(x.salur) : ''}${x.lengd ? ' · ' + esc(x.lengd) : ''}</div></div>`;
+  return `<div class="s-lina ${x.logbundinn ? 'brynt' : 'vidv'}"><div class="s-tg ${x.logbundinn ? 'lb' : ''}">${esc(x.flokkur)}${x.dags < iDag() ? ' · ' + esc(dags(x.dags)) : ''}</div>
+    <div class="s-titill">${esc(x.heiti)}</div>
+    <div class="s-meta">${esc(x.mal)}${x.i_dagatali ? '' : ' <span class="s-merki brynt">ekki í dagatali</span>'}</div></div>`;
+}
+const fram = n => { const d = new Date(Date.now() + n * 864e5); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const tilSunnudags = () => (7 - new Date().getDay()) % 7;
+function dagaRuna(atr, hopar) {        // atriði flokkuð eftir dögum innan hópa
+  const radad = atr.slice().sort((a, b) => (a.dags + (a.timi || '~')).localeCompare(b.dags + (b.timi || '~')));
+  return hopar.map(h => {
+    if (h.fra > h.til) return '';
+    const x = radad.filter(a => a.dags >= h.fra && a.dags <= h.til);
+    if (!x.length && !h.alltaf) return '';
+    const dagar = [...new Set(x.map(a => a.dags))];
+    return `<h3 class="s-hopur">${esc(h.h)}</h3>` + (dagar.length ? dagar.map(d => `<div class="s-dagur"><div class="s-dh">${esc(dags(d))}${d === iDag() ? ' · í dag' : d === aMorgun() ? ' · á morgun' : ''}</div>${x.filter(a => a.dags === d).map(lina).join('')}</div>`).join('') : '<p class="s-tomt">Ekkert.</p>');
+  }).join('');
+}
+let SIA = '';
+function siaSmellt(s) {
+  if (s === 'postur') { location.hash = '#postur'; return; }
+  if (s === 'vl') { location.hash = '#verkefni'; return; }
+  SIA = SIA === s ? '' : s; synaDag();
 }
 async function synaDag(nytt) {
   if (nytt || !STADA) { $('#dagur').innerHTML = '<p class="s-tomt">Les …</p>'; try { await saekjaStodu(); } catch (e) { $('#dagur').innerHTML = `<p class="s-villa">${esc(e.message)}</p>`; return; } }
   const g = STADA && STADA.dagur;
   if (!g) { $('#dagur').innerHTML = ferskleiki(); return; }
-  const a = iDag(), b = aMorgun();
-  const dagsins = d => [...g.thinghold.filter(x => x.dags === d).sort((x, y) => (x.timi || '').localeCompare(y.timi || '')), ...g.frestir.filter(x => x.dags === d)];
-  const idag = dagsins(a), amorgun = dagsins(b), lidid = g.frestir.filter(x => x.dags < a);
-  const fram = d => { const t = new Date(Date.now() + d * 864e5).toISOString().slice(0, 10); return t; };
-  const n14f = g.frestir.filter(x => x.dags > b && x.dags <= fram(14)).length, n14t = g.thinghold.filter(x => x.dags > b && x.dags <= fram(14)).length;
-  $('#undirhaus').textContent = (idag.length + amorgun.length ? (idag.length + amorgun.length) + ' atriði í dag og á morgun' : 'Ekkert í dag og á morgun');
+  const a = iDag(), b = aMorgun(), f14 = fram(14), sun = tilSunnudags();
+  const fr = g.frestir.filter(x => x.dags >= a && x.dags <= f14), th = g.thinghold.filter(x => x.dags >= a && x.dags <= f14);
+  const lidid = g.frestir.filter(x => x.dags < a);
+  const nTh = th.slice().sort((x, y) => (x.dags + (x.timi || '')).localeCompare(y.dags + (y.timi || '')))[0];
+  const bid = hreinsaVerkBid(), opin = VERK && VERK.lidir ? VERK.lidir.filter(l => !verkLokid(l, bid)).length : null;
+  const tv = (STADA.tilvonandi && STADA.tilvonandi.bidur) || [];
+  $('#t-postur').textContent = (DROG || []).length || '';
+  if (opin != null) $('#t-verkefni').textContent = opin || '';
+  const reitur = (s, n, t, u, r) => `<button class="s-reitur${SIA === s ? ' virk' : ''}${r ? ' r' : ''}" onclick="siaSmellt('${s}')"><span class="n">${n}</span><span class="t">${t}</span><span class="u">${esc(u)}</span></button>`;
+  $('#undirhaus').textContent = 'Næstu 14 dagar';
+  let runa;
+  if (SIA === 'tv') runa = tilvonandiHTML();
+  else {
+    const atr = SIA === 'fr' ? fr : SIA === 'th' ? th : [...th, ...fr];
+    runa = dagaRuna(atr, [{ h: 'Í dag og á morgun', fra: a, til: b, alltaf: true },
+      { h: 'Það sem eftir er vikunnar', fra: fram(2), til: fram(sun) },
+      { h: 'Næsta vika og fram að 14 dögum', fra: fram(Math.max(sun + 1, 2)), til: f14 }]);
+  }
   $('#dagur').innerHTML = ferskleiki() + (g.villur.length ? `<p class="s-villa">${g.villur.map(esc).join('<br>')}</p>` : '') +
-    `<section class="s-kafli"><h2>Í dag</h2>${idag.length ? idag.map(lina).join('') : '<p class="s-tomt">Ekkert í dag.</p>'}</section>
-     <section class="s-kafli"><h2>Á morgun</h2>${amorgun.length ? amorgun.map(lina).join('') : '<p class="s-tomt">Ekkert á morgun.</p>'}</section>
-     ${lidid.length ? `<section class="s-kafli"><details><summary>Liðið og óuppfyllt · ${lidid.length}</summary>${lidid.map(lina).join('')}</details></section>` : ''}
-     <p class="s-tomt">Næstu 14 dagar: ${n14f} frestir · ${n14t} þinghöld.</p>
-     <div><button class="s-takki" onclick="synaDag(true)">Uppfæra</button></div>`;
+    `<div class="s-reitir">${reitur('fr', fr.length, 'Frestir · 14 d', fr.filter(x => !x.i_dagatali).length + ' ekki í dagatali', fr.some(x => x.logbundinn && x.dags <= b))}
+     ${reitur('th', th.length, 'Þinghöld', nTh ? 'næst ' + dags(nTh.dags) + (nTh.timi ? ' kl. ' + nTh.timi : '') : 'ekkert')}
+     ${reitur('postur', (DROG || []).length, 'Póstur', 'bíður svars')}
+     ${reitur('vl', opin == null ? '…' : opin, 'Verkefni', 'opin á lista')}
+     ${reitur('tv', tv.length, 'Tilvonandi', 'upptaka bíður máls')}</div>
+     ${SIA ? `<p class="s-meta">Sía: ${({ fr: 'aðeins frestir', th: 'aðeins þinghöld', tv: 'tilvonandi viðskiptavinir' })[SIA]} · <a href="#idag" onclick="SIA='';synaDag();return false">sýna allt</a></p>` : ''}
+     <section class="s-kafli">${runa}</section>
+     ${lidid.length && !SIA ? `<section class="s-kafli"><details><summary>Liðið og óuppfyllt · ${lidid.length}</summary>${lidid.map(lina).join('')}</details></section>` : ''}
+     <div class="s-takkar"><button class="s-takki" onclick="synaDag(true)">Uppfæra</button><button class="s-takki" onclick="location.hash='#athuga'">Athuga hagsmunaárekstur</button></div>`;
 }
+async function synaFresti(nytt) {
+  if (nytt || !STADA) { $('#frestir').innerHTML = '<p class="s-tomt">Les …</p>'; try { await saekjaStodu(); } catch (e) { $('#frestir').innerHTML = `<p class="s-villa">${esc(e.message)}</p>`; return; } }
+  const g = STADA && STADA.dagur;
+  if (!g) { $('#frestir').innerHTML = ferskleiki(); return; }
+  const a = iDag(), allt = [...g.thinghold, ...g.frestir];
+  $('#undirhaus').textContent = g.frestir.length + ' frestir · ' + g.thinghold.length + ' þinghöld';
+  $('#frestir').innerHTML = ferskleiki() + `<section class="s-kafli">${dagaRuna(allt, [{ h: 'Liðið og óuppfyllt', fra: '0000', til: fram(-1) },
+    { h: 'Í dag og á morgun', fra: a, til: aMorgun(), alltaf: true }, { h: 'Næstu 14 dagar', fra: fram(2), til: fram(14) }, { h: 'Síðar', fra: fram(15), til: '9999' }])}</section>
+    <div class="s-takkar"><button class="s-takki" onclick="synaFresti(true)">Uppfæra</button></div>`;
+}
+
+// ---------------------------------------------------------------- tilvonandi viðskiptavinir (Ómar 7.11.2026)
+// Upptaka sem bíður máls fer í málsmöppu með smelli: tölvan afritar hana í rót málsins og
+// umritunina í Claude vinnuskjöl\Lestur. Tveir smellir (staðfesting í hnappnum) áður en nokkuð fer.
+let TV_STADFESTA = '';
+function tilvonandiHTML() {
+  const t = (STADA && STADA.tilvonandi) || { bidur: [], komid: [] };
+  const min = minarBeidnir().filter(b => b.tegund === 'tilvonandi');
+  const kort = x => {
+    const send = min.find(b => b.skra === x.skra && (!BEIDNIR[b.id] || BEIDNIR[b.id].stada !== 'villa'));
+    const villa = min.filter(b => b.skra === x.skra && BEIDNIR[b.id] && BEIDNIR[b.id].stada === 'villa').pop();
+    const takki = m => { const k = x.skra + '|' + m, st = TV_STADFESTA === k;
+      return `<button class="s-takki ${st ? 'haetta' : 'adal'}" data-k="${esc(k)}" onclick="tvSmellt(this.dataset.k)">${st ? 'Staðfesta: setja í ' : 'Setja í málið: '}${esc(m)}</button>`; };
+    const valid = TV_STADFESTA.startsWith(x.skra + '|') && !(x.uppastungur || []).includes(TV_STADFESTA.slice(x.skra.length + 1)) ? TV_STADFESTA.slice(x.skra.length + 1) : '';
+    return `<div class="s-lina hreimur"><div class="s-titill">${esc(x.nafn)}</div>
+      <div class="s-meta">${esc(dags(x.dags))} kl. ${esc(x.kl)} · ${x.staerd_mb} MB · ${x.umritun ? 'umritað' : 'umritun bíður'}</div>
+      ${send ? `<p class="s-meta">${beidniMerki(send.id)} ${esc((BEIDNIR[send.id] || {}).skilabod || 'Tölvan setur upptökuna í málið þegar hún kemur upp.')}</p>` : `
+      ${villa ? `<p class="s-villa">${esc(BEIDNIR[villa.id].skilabod || 'Ekki framkvæmt.')}</p>` : ''}
+      <div class="s-takkar">${(x.uppastungur || []).map(takki).join('') || '<span class="s-meta">Engin málsmappa ber nafnið enn. Stofnaðu málið í Vergo, eða veldu mál hér:</span>'}${valid ? takki(valid) : ''}</div>
+      <select class="s-inn" style="margin-top:8px" data-skra="${esc(x.skra)}" onchange="if(this.value)tvSmellt(this.dataset.skra+'|'+this.value)"><option value="">Annað mál …</option>
+        ${((STADA && STADA.mal) || []).map(m => `<option value="${esc(m.mappa)}">${esc(m.birting)}</option>`).join('')}</select>`}</div>`;
+  };
+  return `<h3 class="s-hopur">Upptökur sem bíða máls · ${t.bidur.length}</h3>` + (t.bidur.length ? t.bidur.map(kort).join('') : '<p class="s-tomt">Engin upptaka bíður máls. Tilvonandi viðskiptavinur er tekinn upp undir Minni.</p>') +
+    (t.komid.length ? `<details><summary>Komið í mál síðustu 14 daga · ${t.komid.length}</summary>${t.komid.map(x => `<div class="s-lina"><div class="s-undir">${esc(x.nafn)} → ${esc(x.mappa)}</div><div class="s-meta">${esc(dags(x.dags))}</div></div>`).join('')}</details>` : '');
+}
+async function tvSmellt(k) {
+  if (TV_STADFESTA !== k) { TV_STADFESTA = k; synaDag(); return; }
+  TV_STADFESTA = '';
+  const skra = k.slice(0, k.indexOf('|')), mappa = k.slice(k.indexOf('|') + 1);
+  try {
+    const b = await setjaIBidrod({ tegund: 'tilvonandi', skra, mappa, lysing: skra + ' → ' + mappa });
+    geymaBeidni({ id: b.id, tegund: 'tilvonandi', kl: b.kl, lysing: b.lysing, skra });
+  } catch (e) { tilkynna(e.message + ' Ekkert fór í biðröð.'); }
+  synaDag();
+}
+function tilkynna(t) { const d = $('#tilk'); d.textContent = t; d.hidden = false; setTimeout(() => { d.hidden = true; }, 6000); }
 
 // ---------------------------------------------------------------- beiðnir
 function nyttId() { const d = new Date(); return d.toISOString().slice(0, 19).replace(/[-:]/g, '') + '-' + Math.random().toString(36).slice(2, 8); }
@@ -415,6 +515,7 @@ function malSia() {
 }
 const stimpill = () => new Date().toISOString().slice(0, 19).replace('T', ' ').replace(/:/g, '');
 const malHeiti = () => { const o = $('#mal').selectedOptions[0]; return $('#mal').value ? o.textContent : 'án máls'; };
+const tvNafn = () => ($('#tv-nafn').value || '').trim();
 const hreint = t => t.replace(/[\\/:*?"<>|#%]+/g, '_').slice(0, 60);
 async function vistaMinni() {
   const t = $('#minni-texti').value.trim(); if (!t) return;
@@ -425,26 +526,52 @@ async function vistaMinni() {
   try { await skrifa('minni/' + nafn, efni, 'text/markdown; charset=utf-8'); $('#minni-texti').value = ''; $('#minni-stada').textContent = 'Vistað í OneDrive.'; synaMinni(); }
   catch (e) { $('#minni-stada').textContent = e.message + ' Textinn er enn í reitnum.'; }
 }
-let REC = null, BUTAR = [];
+let REC = null, BUTAR = [], VAKA = null, BIDUR_UPPHL = null, KLUKKA = null;
+// Ekkert hámark á lengd (Ómar 7.11.2026). Bútar á sekúndu svo ekkert tapist; skjárinn haldinn vakandi.
+// Ómar tilkynnir viðmælanda sjálfur að upptaka sé hafin.
 async function upptaka() {
   if (REC) { REC.stop(); return; }
+  if (BIDUR_UPPHL) { $('#minni-stada').textContent = 'Fyrri upptaka er enn óvistuð. Ýttu á „Reyna aftur“ fyrst.'; return; }
   try {
     const s = await navigator.mediaDevices.getUserMedia({ audio: true });
     const teg = MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : 'audio/webm';
+    const tv = tvNafn();
+    const nafn = stimpill() + (tv ? ' - BÍÐUR MÁLS - ' + hreint(tv) : ' - ' + hreint(malHeiti())) + ' - upptaka' + (teg === 'audio/mp4' ? '.m4a' : '.webm');
     REC = new MediaRecorder(s, { mimeType: teg, audioBitsPerSecond: 64000 }); BUTAR = [];
-    REC.ondataavailable = e => BUTAR.push(e.data);
+    const byrjun = Date.now();
+    REC.ondataavailable = e => { if (e.data && e.data.size) BUTAR.push(e.data); };
     REC.onstop = async () => {
-      s.getTracks().forEach(t => t.stop()); REC = null; $('#upptaka').textContent = '● Taka upp';
-      const b = new Blob(BUTAR, { type: teg });
-      const nafn = stimpill() + ' - ' + hreint(malHeiti()) + ' - upptaka' + (teg === 'audio/mp4' ? '.m4a' : '.webm');
-      $('#minni-stada').textContent = 'Vistar upptöku …';
-      try { await skrifa('minni/' + nafn, b, teg); await setjaIBidrod({ tegund: 'umrita', skra: nafn, lysing: nafn });
-        $('#minni-stada').textContent = 'Upptakan er í OneDrive. Tölva umritar hana þegar hún kemur upp.'; synaMinni(); }
-      catch (e) { $('#minni-stada').textContent = e.message; }
+      s.getTracks().forEach(t => t.stop()); REC = null; clearInterval(KLUKKA); $('#upptaka').textContent = '● Taka upp';
+      try { if (VAKA) await VAKA.release(); } catch (e) {} VAKA = null;
+      BIDUR_UPPHL = { blob: new Blob(BUTAR, { type: teg }), nafn, teg, tv }; BUTAR = [];
+      if (tv) $('#tv-nafn').value = '';
+      hladaUpp();
     };
-    REC.start(); $('#upptaka').textContent = '■ Ljúka upptöku'; $('#minni-stada').textContent = 'Tekur upp … (hámark um 8 mín.)';
+    REC.start(1000);
+    try { VAKA = await navigator.wakeLock.request('screen'); } catch (e) {}
+    $('#upptaka').textContent = '■ Ljúka upptöku';
+    $('#minni-stada').textContent = 'Tekur upp …';
+    KLUKKA = setInterval(() => { const m = Math.floor((Date.now() - byrjun) / 1000);
+      $('#minni-stada').textContent = 'Tekur upp' + (tv ? ' — ' + tv + ' (bíður máls)' : '') + ' · ' + Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') + ' · haltu síðunni opinni'; }, 1000);
   } catch (e) { $('#minni-stada').textContent = 'Hljóðneminn fékkst ekki: ' + e.message; }
 }
+async function hladaUpp() {        // upptakan geymist í minni símans þar til hún er komin í OneDrive
+  const u = BIDUR_UPPHL; if (!u) return;
+  $('#upphl-aftur').hidden = true;
+  const mb = (u.blob.size / 1048576).toFixed(1);
+  $('#minni-stada').textContent = 'Vistar upptöku (' + mb + ' MB) …';
+  try {
+    await skrifa('minni/' + u.nafn, u.blob, u.teg, h => { $('#minni-stada').textContent = 'Vistar upptöku … ' + Math.round(h * 100) + '% af ' + mb + ' MB'; });
+    BIDUR_UPPHL = null;
+    await setjaIBidrod({ tegund: 'umrita', skra: u.nafn, lysing: u.nafn });
+    $('#minni-stada').textContent = 'Upptakan er í OneDrive' + (u.tv ? ', merkt „Bíður máls“ (' + u.tv + ')' : '') + '. Tölva umritar hana þegar hún kemur upp.';
+    synaMinni();
+  } catch (e) {
+    $('#minni-stada').textContent = e.message + ' Upptakan er enn í símanum — ekki loka síðunni.';
+    $('#upphl-aftur').hidden = false;
+  }
+}
+window.addEventListener('beforeunload', e => { if (REC || BIDUR_UPPHL) { e.preventDefault(); e.returnValue = ''; } });
 
 // ---------------------------------------------------------------- ræsing
 (async () => {

@@ -9,12 +9,12 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ESJA">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#10233F">
+<meta name="theme-color" content="#0B182E">
 <meta name="robots" content="noindex,nofollow">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="takn-180.png">
-<link rel="stylesheet" href="stilar.css?v=6">
-<link rel="stylesheet" href="simi.css?v=6">
+<link rel="stylesheet" href="stilar.css?v=7">
+<link rel="stylesheet" href="simi.css?v=7">
 </head>
 <body>
 <!-- ENGIN GÖGN Í ÞESSARI SKRÁ. Allt efni er sótt eftir innskráningu úr OneDrive notandans (Microsoft Graph). -->
@@ -31,6 +31,7 @@
   <div class="s-syn" id="syn-idag"><div id="dagur" class="s-dalkur"></div></div>
   <div class="s-syn" id="syn-verkefni"><div id="verkefni" class="s-dalkur"></div></div>
   <div class="s-syn" id="syn-postur"><div id="postur" class="s-dalkur"></div></div>
+  <div class="s-syn" id="syn-frestir"><div id="frestir" class="s-dalkur"></div></div>
   <div class="s-syn" id="syn-athuga">
     <section class="s-kafli"><h2>Athuga hagsmunaárekstur</h2>
       <form onsubmit="event.preventDefault();athuga()">
@@ -46,20 +47,25 @@
       <textarea class="s-inn" id="minni-texti" style="margin-top:8px" placeholder="Skrifaðu, eða ýttu á hljóðnemann á lyklaborðinu og lestu inn."></textarea>
       <div class="s-takkar"><button class="s-takki adal" onclick="vistaMinni()">Vista</button>
         <button class="s-takki" id="upptaka" onclick="upptaka()" hidden>● Taka upp</button></div>
-      <p class="s-meta" id="minni-stada"></p></section>
+      <p class="s-meta" id="minni-stada"></p>
+      <div class="s-takkar"><button class="s-takki adal" id="upphl-aftur" onclick="hladaUpp()" hidden>Reyna aftur að vista upptöku</button></div></section>
+    <section class="s-kafli"><h2>Tilvonandi viðskiptavinur</h2>
+      <input class="s-inn" id="tv-nafn" autocomplete="off" placeholder="Nafn viðmælanda (fyrir upptöku án máls)">
+      <p class="s-meta">Sé nafn skráð hér er upptakan merkt „Bíður máls“ og birtist undir Tilvonandi á Í dag. Þaðan fer hún í málið með einum smelli þegar það er stofnað. Ekkert hámark er á lengd; tilkynntu viðmælanda að upptaka sé hafin.</p></section>
     <section class="s-kafli"><h2>Síðustu minnisatriði</h2><div id="minni-listi"></div></section>
   </div>
 </main>
 <button class="s-fab" id="fab" onclick="location.hash='#minni'" aria-label="Minnisatriði" hidden><b></b>Tala</button>
 <nav class="s-stika" id="stika" hidden>
   <a href="#idag" data-s="idag">Í dag</a>
-  <a href="#verkefni" data-s="verkefni">Verkefni<span class="s-tala" id="t-verkefni"></span></a>
   <a href="#postur" data-s="postur">Póstur<span class="s-tala" id="t-postur"></span></a>
-  <a href="#athuga" data-s="athuga">Athuga</a>
+  <a href="#frestir" data-s="frestir">Frestir</a>
+  <a href="#verkefni" data-s="verkefni">Verkefni<span class="s-tala" id="t-verkefni"></span></a>
   <a href="#minni" data-s="minni">Minni</a>
 </nav>
-<script src="stillingar.js?v=6"></script>
-<script src="msal-browser.min.js?v=6"></script>
-<script src="app.js?v=6"></script>
+<div class="s-tilk" id="tilk" hidden></div>
+<script src="stillingar.js?v=7"></script>
+<script src="msal-browser.min.js?v=7"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>
