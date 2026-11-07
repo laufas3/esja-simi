@@ -2,7 +2,7 @@
 // (Microsoft Graph, innskráning notandans). Ekkert efni er í kóðanum og ekkert er geymt
 // í símanum nema innskráningin og listi yfir eigin beiðnir (auðkenni).
 'use strict';
-const UTGAFA = 7;
+const UTGAFA = 8;
 const ST = window.SIMI_STILLINGAR || {};
 let TOLVUR = [];   // fundnar úr stada-<TÖLVA>.json í möppunni
 const SCOPES = ['Files.ReadWrite'];
@@ -172,7 +172,7 @@ function syna() {
   const s = SYNIR.includes(h) ? h : 'idag';
   document.querySelectorAll('.s-syn').forEach(x => x.classList.toggle('virk', x.id === 'syn-' + s));
   document.querySelectorAll('.s-stika a').forEach(a => a.classList.toggle('virkt', a.dataset.s === s));
-  $('#fab').hidden = s === 'minni';
+  fabStada(s);
   if (s === 'athuga') document.querySelector('.s-stika a[data-s=idag]').classList.add('virkt');
   ({ idag: synaDag, verkefni: synaVerk, postur: synaPost, frestir: synaFresti, athuga: synaAthuga, minni: synaMinni })[s]();
 }
@@ -541,7 +541,7 @@ async function upptaka() {
     const byrjun = Date.now();
     REC.ondataavailable = e => { if (e.data && e.data.size) BUTAR.push(e.data); };
     REC.onstop = async () => {
-      s.getTracks().forEach(t => t.stop()); REC = null; clearInterval(KLUKKA); $('#upptaka').textContent = '● Taka upp';
+      s.getTracks().forEach(t => t.stop()); REC = null; clearInterval(KLUKKA); $('#upptaka').textContent = '● Taka upp'; fabStada();
       try { if (VAKA) await VAKA.release(); } catch (e) {} VAKA = null;
       BIDUR_UPPHL = { blob: new Blob(BUTAR, { type: teg }), nafn, teg, tv }; BUTAR = [];
       if (tv) $('#tv-nafn').value = '';
@@ -549,7 +549,7 @@ async function upptaka() {
     };
     REC.start(1000);
     try { VAKA = await navigator.wakeLock.request('screen'); } catch (e) {}
-    $('#upptaka').textContent = '■ Ljúka upptöku';
+    $('#upptaka').textContent = '■ Ljúka upptöku'; fabStada();
     $('#minni-stada').textContent = 'Tekur upp …';
     KLUKKA = setInterval(() => { const m = Math.floor((Date.now() - byrjun) / 1000);
       $('#minni-stada').textContent = 'Tekur upp' + (tv ? ' — ' + tv + ' (bíður máls)' : '') + ' · ' + Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0') + ' · haltu síðunni opinni'; }, 1000);
@@ -570,6 +570,22 @@ async function hladaUpp() {        // upptakan geymist í minni símans þar til
     $('#minni-stada').textContent = e.message + ' Upptakan er enn í símanum — ekki loka síðunni.';
     $('#upphl-aftur').hidden = false;
   }
+}
+// Record-hnappurinn (Ómar 7.11.2026): einn smellur byrjar upptöku strax og opnar Minni, annar stöðvar.
+// Meðan tekið er upp sést hann á öllum flipum, líka Minni, og púlsar með ferningi.
+const upptakaHaegt = () => !!(window.isSecureContext && navigator.mediaDevices && window.MediaRecorder);
+function fabStada(s) {
+  s = s || (location.hash || '#idag').slice(1).split('/')[0];
+  const f = $('#fab'), rec = !!REC;
+  f.classList.toggle('rec', rec);
+  f.hidden = !rec && s === 'minni';
+  f.setAttribute('aria-label', rec ? 'Stöðva upptöku' : 'Byrja upptöku');
+  f.querySelector('span').textContent = rec ? 'Stop' : 'Record';
+}
+function fabSmellt() {
+  if (REC) { upptaka(); return; }
+  if (location.hash !== '#minni') location.hash = '#minni';
+  if (upptakaHaegt()) upptaka();
 }
 window.addEventListener('beforeunload', e => { if (REC || BIDUR_UPPHL) { e.preventDefault(); e.returnValue = ''; } });
 
