@@ -2,9 +2,12 @@
 // (Microsoft Graph, innskráning notandans). Ekkert efni er í kóðanum og ekkert er geymt
 // í símanum nema innskráningin og listi yfir eigin beiðnir (auðkenni).
 'use strict';
-const UTGAFA = 8;
+const UTGAFA = 9;
 const ST = window.SIMI_STILLINGAR || {};
 let TOLVUR = [];   // fundnar úr stada-<TÖLVA>.json í möppunni
+// Birtingarheiti tölvu: lykillinn BARCELONA (skráarheiti, 26.10.2026) heitir GARDABAER í viðmóti (Ómar 7.11.2026).
+const TOLVU_BIRTING = { BARCELONA: 'GARDABAER' };
+const tolvuNafn = t => TOLVU_BIRTING[String(t || '').toUpperCase()] || t;
 const SCOPES = ['Files.ReadWrite'];
 const $ = s => document.querySelector(s);
 const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -161,8 +164,8 @@ function ferskleiki() {
   if (!STADA) return '<p class="s-villa">Engin staða fannst enn frá tölvunum. Kveiktu á annarri hvorri tölvunni.</p>';
   const aldur = (Date.now() - new Date(STADA.kl).getTime()) / 6e4;
   const gamalt = aldur > 30;
-  const hin = TOLVUR.filter(t => t !== STADA.tolva).map(t => ALLAR[t] ? t + ' ' + dags(ALLAR[t].kl) + ' kl. ' + klukka(ALLAR[t].kl) : t + ': engin staða').join(' · ');
-  return `<p class="s-ferskt ${gamalt ? 'gamalt' : ''}">Staða frá ${esc(STADA.tolva)} ${esc(dags(STADA.kl))} kl. ${esc(klukka(STADA.kl))}${gamalt ? ' — báðar tölvur gætu verið slökktar; aðgerðir bíða' : ''}. <span>${esc(hin)}</span></p>`;
+  const hin = TOLVUR.filter(t => t !== STADA.tolva).map(t => ALLAR[t] ? tolvuNafn(t) + ' ' + dags(ALLAR[t].kl) + ' kl. ' + klukka(ALLAR[t].kl) : tolvuNafn(t) + ': engin staða').join(' · ');
+  return `<p class="s-ferskt ${gamalt ? 'gamalt' : ''}">Staða frá ${esc(tolvuNafn(STADA.tolva))} ${esc(dags(STADA.kl))} kl. ${esc(klukka(STADA.kl))}${gamalt ? ' — báðar tölvur gætu verið slökktar; aðgerðir bíða' : ''}. <span>${esc(hin)}</span></p>`;
 }
 
 // ---------------------------------------------------------------- sýnir
@@ -297,7 +300,7 @@ const STADA_ORD = { sent: 'Sent', ostadfest: 'Sent — óstaðfest', villa: 'Ekk
 function beidniMerki(id) {
   const n = BEIDNIR[id];
   if (!n) return '<span class="s-merki bidur">Bíður tölvu</span>';
-  return `<span class="s-merki ${n.stada === 'villa' ? 'brynt' : ''}">${esc(STADA_ORD[n.stada] || n.stada)} · ${esc(n.tolva)}</span>`;
+  return `<span class="s-merki ${n.stada === 'villa' ? 'brynt' : ''}">${esc(STADA_ORD[n.stada] || n.stada)} · ${esc(tolvuNafn(n.tolva))}</span>`;
 }
 
 // ---------------------------------------------------------------- póstur
@@ -416,7 +419,7 @@ async function synaVerk(nytt) {
   const kaflar = [];
   opin.forEach(l => { let k = kaflar.find(x => x.h === l.kafli); if (!k) kaflar.push(k = { h: l.kafli, l: [] }); k.l.push(l); });
   const aldur = (Date.now() - new Date(VERK.kl).getTime()) / 6e4;
-  $('#verkefni').innerHTML = `<p class="s-ferskt ${aldur > 30 ? 'gamalt' : ''}">Listi ${esc(dags(VERK.listi))} · frá ${esc(VERK_TOLVA)} ${esc(dags(VERK.kl))} kl. ${esc(klukka(VERK.kl))}${aldur > 30 ? ' — tölvurnar gætu verið slökktar; breytingar bíða' : ''}</p>` +
+  $('#verkefni').innerHTML = `<p class="s-ferskt ${aldur > 30 ? 'gamalt' : ''}">Listi ${esc(dags(VERK.listi))} · frá ${esc(tolvuNafn(VERK_TOLVA))} ${esc(dags(VERK.kl))} kl. ${esc(klukka(VERK.kl))}${aldur > 30 ? ' — tölvurnar gætu verið slökktar; breytingar bíða' : ''}</p>` +
     (seintN ? `<p class="s-villa">⚠ ${seintN} ${seintN === 1 ? 'svar bíður' : 'svör bíða'} Claude lengur en 2 klst.</p>` : '') +
     (kaflar.length ? kaflar.map(k => `<h2 class="s-verk-kafli">${esc(k.h)}</h2>` + k.l.map(l => verkHTML(l, bid)).join('')).join('')
       : '<p class="s-tomt">Ekkert opið á listanum.</p>') +
@@ -487,7 +490,7 @@ async function synaAthuga() {
       ${st ? `<details><summary>Tölvan: póstur og málsmöppur</summary>
         ${st.postur.map(p => `<div class="s-lina"><div class="s-undir">${esc(p.postholf)} · ${esc(p.mappa)} · ${p.fjoldi}${p.takmarkad ? '+' : ''} póstar</div><div class="s-meta">${esc(p.fyrst)} – ${esc(p.sidast)}</div></div>`).join('') || '<p class="s-tomt">Enginn póstur.</p>'}
         ${st.moppur.map(m => `<div class="s-lina"><div class="s-undir">${esc(m.mappa)}</div><div class="s-meta">${m.i_heiti ? 'nafnið í heiti möppu' : ''}${m.skrar ? ' · ' + m.skrar + ' skjöl með nafninu' : ''}</div></div>`).join('') || '<p class="s-tomt">Engin málsmappa.</p>'}
-      </details>` : ''}<p class="s-meta">Kannað á ${esc(n.tolva)} ${esc(dags(n.kl))} kl. ${esc(klukka(n.kl))}</p></section>`;
+      </details>` : ''}<p class="s-meta">Kannað á ${esc(tolvuNafn(n.tolva))} ${esc(dags(n.kl))} kl. ${esc(klukka(n.kl))}</p></section>`;
   }).join('');
 }
 
